@@ -3,13 +3,15 @@
 import React from "react";
 import {FakeAuthProvider} from '../components/FakeAuthProvider/FakeAuthProvider'
 import AuthContext from '../contexts/AuthContext'
-export default function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = React.useState<any>(null);
+import IUser from "../interfaces/IUser";
+export default function AuthProvider({ children }: { children: React.ReactNode }){
+    const [user, setUser] = React.useState<IUser | null>(null);
 
-    const signin = (newUser: string, callback: VoidFunction) => {
-        return FakeAuthProvider.signin(() => {
-            setUser(newUser);
-            callback();
+    const isLoggetIn = ()=>FakeAuthProvider.isAuthenticated;
+    const signin = (username: string, password:string, callback: (isLoggedIn:boolean)=>void) => {
+        return FakeAuthProvider.signin(username, password, (user:IUser | null) => {
+            setUser(user);
+            callback(user!==null);
         });
     };
 
@@ -20,7 +22,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         });
     };
 
-    const value = { user, signin, signout };
+    const value  = { user, signin, signout, isLoggetIn } ;
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={value as any}>{children}</AuthContext.Provider>;
 }  

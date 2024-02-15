@@ -3,7 +3,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Copyright from '../../components/Copyright/Copyright';
-
+import { Outlet } from 'react-router-dom';
+import Headrer from '../Header/Header';
+import Toolbar from '@mui/material/Toolbar';
 // TODO remove, this demo shouldn't need to reset the theme.
 
 export default function Layout(){
@@ -12,9 +14,37 @@ export default function Layout(){
             sx={{
             display: 'flex',
             flexDirection: 'column',
+            minHeight:'100vh'
             }}
         >
             <CssBaseline />
+            <Box 
+                component="header"
+            >
+                <Container maxWidth="sm">
+                    <Headrer />
+                    {/* <ul>
+                        <li>
+                            <Link to="/">Public Page</Link>
+                        </li>
+                        <li>
+                            <Link to="/protected">Protected Page</Link>
+                        </li>
+                        <li><AuthStatus /></li>
+                    </ul> */}
+                </Container>
+            </Box>
+            <Toolbar />
+            <Box
+                component="main"
+                sx={{
+                    flex:1
+                }}
+            >
+                <Container maxWidth="sm">
+                    <Outlet />
+                </Container>
+            </Box>
             <Box
             component="footer"
             sx={{
