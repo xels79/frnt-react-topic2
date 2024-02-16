@@ -1,19 +1,16 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useHref } from 'react-router-dom';
 import useAuth from '../../hooks/UseAuth';
 
 
@@ -46,7 +43,7 @@ export default function Login() {
         }else{
             setPasswordError("");
         }
-        auth.signin(username, password, (isLoggedIn:boolean) => {
+        auth.signin(username, password, (isLoggedIn:boolean, message?:string) => {
             // Send them back to the page they tried to visit when they were
             // redirected to the login page. Use { replace: true } so we don't create
             // another entry in the history stack for the login page.  This means that
@@ -56,8 +53,13 @@ export default function Login() {
             if (isLoggedIn){
                 navigate(from, { replace: true });
             }else{
-                setPasswordError("Неправильное имя пользователя или пароль!");
-                setUNameError("Неправильное имя пользователя или пароль!");
+                if (message){
+                    setPasswordError(message);
+                    setUNameError(message);
+                }else{
+                    setPasswordError("Неправильное имя пользователя или пароль!");
+                    setUNameError("Неправильное имя пользователя или пароль!");
+                }
             }
         });
     }
@@ -74,62 +76,47 @@ return (
                     alignItems: 'center',
                 }}
             >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-                Вход
-            </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                <TextField
-                margin="normal"
-                required={true}
-                fullWidth
-                id="username"
-                label="username"
-                name="username"
-                autoComplete="username"
-                autoFocus
-                error={uNameError!==''}
-                helperText={uNameError}
-                />
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                error={passwordError!==''}
-                helperText={passwordError}
-                />
-                <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-                />
-                <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                >
-                Sign In
-                </Button>
-                <Grid container>
-                <Grid item xs>
-                    <Link href="#" variant="body2">
-                    Forgot password?
-                    </Link>
-                </Grid>
-                <Grid item>
-                    <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                    </Link>
-                </Grid>
-                </Grid>
-            </Box>
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Вход
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                    margin="normal"
+                    required={true}
+                    fullWidth
+                    id="username"
+                    label="username"
+                    name="username"
+                    autoComplete="username"
+                    autoFocus
+                    error={uNameError!==''}
+                    helperText={uNameError}
+                    />
+                    <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    error={passwordError!==''}
+                    helperText={passwordError}
+                    />
+                    <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    >
+                    Sign In
+                    </Button>
+                    <Box textAlign="right">Нет акаунта <Link href={useHref('/signup')} variant="body2">зарегистрируйтесь.</Link></Box>
+                </Box>
             </Box>
         </Container>
     </ThemeProvider>

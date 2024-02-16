@@ -9,6 +9,8 @@ import RequireAuth from './components/RequireAuth/RequireAuth'
 import Layout from "./components/Layout/Layout";
 import Login from "./routes/Login/Login";
 import Logout from "./routes/Logout/Logout";
+import SignUp from "./routes/SignUp/SignUp";
+import NotFound from './routes/NotFound/NotFound'
 import './App.css'
 export default function App() {
   return (
@@ -17,7 +19,15 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<PublicPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route 
+            path="/logout" 
+            element={
+              <RequireAuth>
+                <Logout />
+              </RequireAuth>
+            } 
+          />
           <Route
             path="/protected"
             element={
@@ -26,6 +36,7 @@ export default function App() {
               </RequireAuth>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </AuthProvider>

@@ -1,17 +1,17 @@
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 import React from "react";
-import {FakeAuthProvider} from '../components/FakeAuthProvider/FakeAuthProvider'
+import {FakeAuthProvider} from './FakeAuthProvider'
 import AuthContext from '../contexts/AuthContext'
 import IUser from "../interfaces/IUser";
+//import { YII2AuthProvider } from "./YII2AuthProvider";
 export default function AuthProvider({ children }: { children: React.ReactNode }){
     const [user, setUser] = React.useState<IUser | null>(null);
 
     const isLoggetIn = ()=>FakeAuthProvider.isAuthenticated;
-    const signin = (username: string, password:string, callback: (isLoggedIn:boolean)=>void) => {
-        return FakeAuthProvider.signin(username, password, (user:IUser | null) => {
+    const signin = (username: string, password:string, callback: (isLoggedIn:boolean, message?:string)=>void) => {
+        return FakeAuthProvider.signin(username, password, (user:IUser | null, _message?:string) => {
             setUser(user);
-            callback(user!==null);
+            callback(user!==null,_message);
         });
     };
 

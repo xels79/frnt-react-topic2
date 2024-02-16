@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Copyright from '../../components/Copyright/Copyright';
 import { Outlet } from 'react-router-dom';
-import Headrer from '../Header/Header';
+import Header from '../Header/Header';
 import Toolbar from '@mui/material/Toolbar';
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -22,7 +22,7 @@ export default function Layout(){
                 component="header"
             >
                 <Container maxWidth="sm">
-                    <Headrer />
+                    <Header />
                     {/* <ul>
                         <li>
                             <Link to="/">Public Page</Link>

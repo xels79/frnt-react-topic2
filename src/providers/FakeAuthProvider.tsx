@@ -1,7 +1,7 @@
 /**
  * This represents some generic auth provider API, like Firebase.
  */
-import IUser from "../../interfaces/IUser";
+import IUser from "../interfaces/IUser";
 class FakeAuthProvider{
     static isAuthenticated = false;
     static signin(username:string, password:string, callback: (user:IUser| null)=>void) {
@@ -21,7 +21,8 @@ class FakeAuthProvider{
             }else{
                 console.log(`FakeAuthProvider: register loggin in "${username}"=>"${password}"`)
                 callback({
-                    username:username
+                    username:username,
+                    password:password
                 });
             }
         }, 1000); // fake async

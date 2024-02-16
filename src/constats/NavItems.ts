@@ -1,13 +1,9 @@
-import useAuth from '../../hooks/UseAuth'
-//import { useCallback, useMemo } from 'react';
 export interface IList{
     label:string,
     path:string
 }
 
-export default function useNavItems(){
-    const auth = useAuth();
-    
+export default function useNavItems(username: string=''):IList[]{
     const navItems:IList[] = [
         {
             label:'Публичная',
@@ -18,10 +14,15 @@ export default function useNavItems(){
             path:"/protected"
         }, 
     ];
-    if (auth.user){
+    if (username){
         navItems.push({
-            label:`"${auth.user.username}" - Выйти`,
+            label:`"${username}" - Выйти`,
             path:'/logout'
+        });
+    }else{
+        navItems.push({
+            label:"Регистрация",
+            path:'/signup'
         });
     }
     return navItems;
