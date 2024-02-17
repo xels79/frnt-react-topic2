@@ -21,7 +21,11 @@ export default function useNavItems(username: string=''):IList[]{
         });
     }else{
         navItems.push({
-            label:"Регистрация",
+            label:"Войти",
+            path:'/Login'
+        });
+        navItems.push({
+            label:"Зарегистрироваться",
             path:'/signup'
         });
     }

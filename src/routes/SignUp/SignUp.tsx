@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,46 +9,37 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useHref } from 'react-router-dom';
-import { useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
+import { useForm, SubmitHandler } from "react-hook-form"
+import useAuth from '../../hooks/UseAuth';
+import IUser from '../../interfaces/IUser'
+import IUserErrors from '../../interfaces/IUserErrors'
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
-interface IUserForm {
-    username?:string,
-    password?:string,
-    firstName?:string,
-    lastName?:string
-    email?:string
-}
-type StrObj = {[index:string]:string|undefined};
-const labels:StrObj = {
-    username:'имя пользователя',
-    password:'пароль',
-    firstName:'фамилия',
-    lastName:'имя',
-    email:'email'
-};
-export default function SignUp() {
-    const [errors, setErrors] = useState  <IUserForm>({});
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const errorMessages:StrObj = {};
-        const requaredMsg = (fieldName:string)=>`Поле "${labels[fieldName]}" должно быть заполнено!`;
-        data.forEach((it, ind:string)=>{
-            const val=it.toString();
-            if (!val){
-                errorMessages[ind] = requaredMsg(ind);
-            }
-        });
-        setErrors(errorMessages);
-        console.log({
-        email: data.get('email'),
-        password: data.get('password'),
-        });
-    };
 
+export default function SignUp() {
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm<IUser>();
+    const navigate = useNavigate();
+    const auth = useAuth();
+    const onSubmit: SubmitHandler<IUser> = (data) => {
+        auth.signup(data, (isLoggetIn, _errors:IUserErrors[] | null)=>{
+            if (isLoggetIn){
+                navigate('/', { replace: true });
+            }else{
+                if (_errors){
+                    _errors.forEach(({ name, type, message }) => setError(name, {type, message}));
+                }else{
+                    console.error('Неизвестная ошибка.');
+                }
+            }
+        })
+    };
     return (
         <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
@@ -68,19 +58,25 @@ export default function SignUp() {
             <Typography component="h1" variant="h5">
                 Регистрация
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                     <TextField
                     autoComplete="given-name"
-                    name="firstName"
+                    // name="firstName"
                     required
                     fullWidth
                     id="firstName"
                     label="Фамилия"
                     autoFocus
-                    error={typeof(errors.firstName)==='string'}
-                    helperText={errors.firstName?errors.firstName:''}
+                    {...register("firstName",{
+                        required:{
+                            value:true,
+                            message:'Поле "Фамилия" должнобыть заполнено'
+                        }
+                    })}
+                    error={typeof(errors.firstName)==='object'}
+                    helperText={typeof(errors.firstName)==='object'?errors.firstName.message:''}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -89,10 +85,15 @@ export default function SignUp() {
                     fullWidth
                     id="lastName"
                     label="Имя"
-                    name="lastName"
                     autoComplete="family-name"
-                    error={typeof(errors.lastName)==='string'}
-                    helperText={errors.lastName?errors.lastName:''}
+                    {...register("lastName",{
+                        required:{
+                            value:true,
+                            message:'Поле "Имя" должнобыть заполнено'
+                        }
+                    })}
+                    error={typeof(errors.lastName)==='object'}
+                    helperText={typeof(errors.lastName)==='object'?errors.lastName.message:''}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -101,10 +102,15 @@ export default function SignUp() {
                     fullWidth
                     id="username"
                     label="Имя пользователя"
-                    name="username"
                     autoComplete="username"
-                    error={typeof(errors.username)==='string'}
-                    helperText={errors.username?errors.username:''}
+                    {...register("username",{
+                        required:{
+                            value:true,
+                            message:'Поле "Имя пользователя" должнобыть заполнено'
+                        }
+                    })}
+                    error={typeof(errors.username)==='object'}
+                    helperText={typeof(errors.username)==='object'?errors.username.message:''}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -113,23 +119,41 @@ export default function SignUp() {
                     fullWidth
                     id="email"
                     label="Email"
-                    name="email"
                     autoComplete="email"
-                    error={typeof(errors.email)==='string'}
-                    helperText={errors.email?errors.email:''}
+                    {...register("email",{
+                        required:{
+                            value:true,
+                            message:'Поле "Email" должнобыть заполнено'
+                        },
+                        pattern:{
+                            value:/^[^.][A-Z0-9._%+-]+@[A-Z0-9-]+\.{1}[A-Z]{2,4}$/i,
+                            message:'Формат поля "Email" должен соответствовать e-mail адресу'
+                        }
+                    })}
+                    error={typeof(errors.email)==='object'}
+                    helperText={typeof(errors.email)==='object'?errors.email.message:''}
                     />
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
                     required
                     fullWidth
-                    name="password"
                     label="Пароль"
                     type="password"
                     id="password"
                     autoComplete="new-password"
-                    error={typeof(errors.password)==='string'}
-                    helperText={errors.password?errors.password:''}
+                    {...register("password",{
+                        required:{
+                            value:true,
+                            message:'Поле "Пароль" должнобыть заполнено'
+                        },
+                        minLength:{
+                            value:8,
+                            message:'Поле "Пароль" должнобыть не менее 8-и символов'
+                        }
+                    })}
+                    error={typeof(errors.password)==='object'}
+                    helperText={typeof(errors.password)==='object'?errors.password.message:''}
                     />
                 </Grid>
                 </Grid>
@@ -142,7 +166,7 @@ export default function SignUp() {
                 Зарегистрироваться
                 </Button>
                 <Grid container justifyContent="flex-end">
-                <Grid item>Уже есть акаунт <Link href={useHref("/login")} variant="body2">войти</Link>?</Grid>
+                <Grid item>Уже есть акаунт <Link onClick={()=>navigate('/login',{ replace: true })} variant="body2">войти</Link>?</Grid>
                 </Grid>
             </Box>
             </Box>

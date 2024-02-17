@@ -1,31 +1,72 @@
 /**
- * This represents some generic auth provider API, like Firebase.
+ * FakeAuthProvider represents some generic auth provider API, like Firebase.
  */
 import IUser from "../interfaces/IUser";
+import IUserErrors from "../interfaces/IUserErrors";
+const emulateSigninDelay = 1000;
+const emulateSignupDelay = 1300;
 class FakeAuthProvider{
+    private static userList:IUser[] = [];
     static isAuthenticated = false;
-    static signin(username:string, password:string, callback: (user:IUser| null)=>void) {
+    static signup(newUser:IUser, callback: (user:IUser| null, errors:IUserErrors[] | null)=>void) {
+        //Имитируем запрос на сервер
+        console.log(`FakeAuthProvider: try to signup "${newUser.username}"=>"${newUser.password}".`)
+        console.log(`FakeAuthProvider: users count "${FakeAuthProvider.userList.length}"`);
+        console.log(`FakeAuthProvider: emulate server request delay - ${emulateSignupDelay}ms`);
         setTimeout(()=>{
-            FakeAuthProvider.isAuthenticated = true;
-            console.log(`FakeAuthProvider: try loggin "${username}"=>"${password}"`)
-            if (password!='12345' || username!="test"){
-                if (username!="test"){
-                    console.log(`FakeAuthProvider: wrong username "${username}"=>"${password}"`)                
-                    console.log('FakeAuthProvider: allow username - "test"');
-                }
-                if (password!='12345'){
-                    console.log(`FakeAuthProvider: wrong password "${username}"=>"${password}"`)                
-                    console.log('FakeAuthProvider: allow - "12345"');
-                }
-                callback(null);
-            }else{
-                console.log(`FakeAuthProvider: register loggin in "${username}"=>"${password}"`)
-                callback({
-                    username:username,
-                    password:password
-                });
+            const uExists:IUser|undefined = FakeAuthProvider.userList.find(userItem=>userItem.username === newUser.username);
+            if (uExists){
+                callback(null, [{ name:'username', message:"Имя пользователя зането.", type:'server' }]);
+                return;
             }
-        }, 1000); // fake async
+            const eExists:IUser|undefined = FakeAuthProvider.userList.find(userItem=>userItem.email === newUser.email);
+            if (eExists){
+                callback(null, [{  name:'email', message:"Email адрес уже занят.", type:'server' }]);
+                return;
+            }
+            if (!newUser.password || newUser.password.length<6){
+                callback(null, [{ name:'password', message:"Пароль не может быть меньше 8-и символов.", type:'server' }]);
+                return;
+            }
+            if (!newUser.username || newUser.username.trim().length<1){
+                callback(null, [{ name:'username', message:"Имя пользователя не может быть пустым.", type:'server'}]);
+                return;
+            }else{
+                newUser.username = newUser.username.trim();
+            }
+            FakeAuthProvider.userList.push(newUser);
+            FakeAuthProvider.isAuthenticated = true;
+            console.log(`FakeAuthProvider: "${newUser.username}"=>"${newUser.password}" - registered and logged in.`)
+            callback(FakeAuthProvider.userList[FakeAuthProvider.userList.length-1], null);
+            
+        }, emulateSignupDelay);
+    }
+    static signin(username:string, password:string, callback: (user:IUser| null, errors:IUserErrors[] | null)=>void) {
+        console.log(`FakeAuthProvider: try loggin "${username}"=>"${password}"`);
+        console.log(`FakeAuthProvider: users count "${FakeAuthProvider.userList.length}"`);
+        console.log(`FakeAuthProvider: emulate server request delay - ${emulateSigninDelay}ms`);
+        setTimeout(()=>{
+            const foundedUser:IUser | undefined = FakeAuthProvider.userList.find(userItem=>userItem.username === username);
+            if (foundedUser){
+                if (foundedUser.password === password){
+                    console.log(`FakeAuthProvider: "${username}"=>"${password}" is logged in.`)
+                    callback(foundedUser, null);
+                }else{
+                    console.log(`FakeAuthProvider: wrong password "${password}"`);
+                    console.log(`FakeAuthProvider: users count "${FakeAuthProvider.userList.length}"`);
+                    callback(null, [
+                        { name:'username', message:"Пользователь не найден,", type:'server' },
+                        { name:'password', message:'или не верный пароль.', type:'server' }
+                    ]);    
+                }
+            }else{
+                console.log(`FakeAuthProvider: wrong username "${username}"`);
+                callback(null, [
+                    { name:'username', message:"Пользователь не найден,", type:'server' },
+                    { name:'password', message:'или не верный пароль.', type:'server' }
+                ]);
+            }
+        }, emulateSigninDelay);
     }
     static signout(callback: VoidFunction) {
         setTimeout(()=>{
