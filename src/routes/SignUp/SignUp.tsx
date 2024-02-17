@@ -23,18 +23,24 @@ interface IUserForm {
     email?:string
 }
 type StrObj = {[index:string]:string|undefined};
+const labels:StrObj = {
+    username:'имя пользователя',
+    password:'пароль',
+    firstName:'фамилия',
+    lastName:'имя',
+    email:'email'
+};
 export default function SignUp() {
-    const [errors, setErrors] = useState  <StrObj>({});
+    const [errors, setErrors] = useState  <IUserForm>({});
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const errorMessages:StrObj = {};
-        const requaredMsg = (fieldName:string)=>`Поле ${fieldName} должно быть заполнено!`;
+        const requaredMsg = (fieldName:string)=>`Поле "${labels[fieldName]}" должно быть заполнено!`;
         data.forEach((it, ind:string)=>{
-            const index=ind.toString();
             const val=it.toString();
             if (!val){
-                errorMessages[index] = requaredMsg(ind);
+                errorMessages[ind] = requaredMsg(ind);
             }
         });
         setErrors(errorMessages);
