@@ -12,7 +12,7 @@ export default function HeaderNav(){
         <Button key={`nav-menu-${index}`} sx={{ 
             color: '#fff',
             bgcolor: location.pathname===item.path?'primary.light':''
-        }} onClick={()=>navigate(item.path)} disabled={location.pathname===item.path}>
+        }} onClick={()=>navigate(item.path)} disabled={location.pathname===item.path || item.disabled}>
             {item.label}
         </Button>
         ))}

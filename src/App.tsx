@@ -10,7 +10,8 @@ import Layout from "./components/Layout/Layout";
 import Login from "./routes/Login/Login";
 import Logout from "./routes/Logout/Logout";
 import SignUp from "./routes/SignUp/SignUp";
-import NotFound from './routes/NotFound/NotFound'
+import NotFound from './routes/NotFound/NotFound';
+import Boards from './routes/Boards/Boards';
 import './App.css'
 export default function App() {
   return (
@@ -29,10 +30,10 @@ export default function App() {
             } 
           />
           <Route
-            path="/protected"
+            path="/boards"
             element={
               <RequireAuth>
-                <ProtectedPage />
+                <Boards />
               </RequireAuth>
             }
           />
@@ -47,6 +48,3 @@ function PublicPage() {
   return <h3>Public</h3>;
 }
 
-function ProtectedPage() {
-  return <h3>Protected</h3>;
-}

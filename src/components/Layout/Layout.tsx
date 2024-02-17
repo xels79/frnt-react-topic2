@@ -23,15 +23,6 @@ export default function Layout(){
             >
                 <Container maxWidth="sm">
                     <Header />
-                    {/* <ul>
-                        <li>
-                            <Link to="/">Public Page</Link>
-                        </li>
-                        <li>
-                            <Link to="/protected">Protected Page</Link>
-                        </li>
-                        <li><AuthStatus /></li>
-                    </ul> */}
                 </Container>
             </Box>
             <Toolbar />

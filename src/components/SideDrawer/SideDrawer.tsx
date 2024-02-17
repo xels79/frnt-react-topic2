@@ -20,7 +20,7 @@ export const SideDrawer=({handleDrawerToggle, brandName}:SideDrawerProps)=>{
         <ListItemButton
             onClick={()=>navigate(item.path)}
             sx={{ textAlign: 'center', bgcolor: location.pathname===item.path?'primary.light':''}}
-            disabled={location.pathname===item.path}
+            disabled={location.pathname===item.path || item.disabled}
         >
             <ListItemText primary={item.label} />
         </ListItemButton>

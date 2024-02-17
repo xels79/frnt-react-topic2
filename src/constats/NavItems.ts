@@ -1,32 +1,38 @@
 export interface IList{
     label:string,
-    path:string
+    path:string,
+    disabled:boolean
 }
 
 export default function useNavItems(username: string=''):IList[]{
     const navItems:IList[] = [
         {
             label:'Публичная',
-            path:'/'
+            path:'/',
+            disabled:false
         }, 
         {
-            label:'Защищенная',
-            path:"/protected"
+            label:'Доски',
+            path:"/boards",
+            disabled:!username
         }, 
     ];
     if (username){
         navItems.push({
             label:`"${username}" - Выйти`,
-            path:'/logout'
+            path:'/logout',
+            disabled:false
         });
     }else{
         navItems.push({
             label:"Войти",
-            path:'/Login'
+            path:'/Login',
+            disabled:false
         });
         navItems.push({
             label:"Зарегистрироваться",
-            path:'/signup'
+            path:'/signup',
+            disabled:false
         });
     }
     return navItems;
