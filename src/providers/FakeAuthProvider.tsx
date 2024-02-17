@@ -16,7 +16,7 @@ class FakeAuthProvider{
         setTimeout(()=>{
             const uExists:IUser|undefined = FakeAuthProvider.userList.find(userItem=>userItem.username === newUser.username);
             if (uExists){
-                callback(null, [{ name:'username', message:"Имя пользователя зането.", type:'server' }]);
+                callback(null, [{ name:'username', message:"Имя пользователя занято.", type:'server' }]);
                 return;
             }
             const eExists:IUser|undefined = FakeAuthProvider.userList.find(userItem=>userItem.email === newUser.email);
