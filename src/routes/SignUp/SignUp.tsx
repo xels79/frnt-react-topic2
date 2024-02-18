@@ -30,7 +30,7 @@ export default function SignUp() {
     const onSubmit: SubmitHandler<IUser> = (data) => {
         auth.signup(data, (isLoggetIn, _errors:IUserErrors[] | null)=>{
             if (isLoggetIn){
-                navigate('/', { replace: true });
+                navigate('/boards', { replace: true });
             }else{
                 if (_errors){
                     _errors.forEach(({ name, type, message }) => setError(name, {type, message}));

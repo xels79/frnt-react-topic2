@@ -7,7 +7,7 @@ export interface IList{
 export default function useNavItems(username: string='', userCount:number = 0):IList[]{
     const navItems:IList[] = [
         {
-            label:'Публичная',
+            label:'Главная',
             path:'/',
             disabled:false
         }, 

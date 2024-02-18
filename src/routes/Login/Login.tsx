@@ -9,7 +9,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { redirect, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/UseAuth';
 import { useForm, SubmitHandler } from "react-hook-form"
 import IUser from '../../interfaces/IUser'
@@ -24,7 +24,7 @@ export default function Login() {
     const auth = useAuth();
     // const [uNameError, setUNameError]=React.useState('');
     // const [passwordError, setPasswordError]=React.useState('');
-    const from = location.state?.from?.pathname || "/";
+    //const from = location.state?.from?.pathname || "/";
     const {
         register,
         handleSubmit,
@@ -34,7 +34,7 @@ export default function Login() {
     const onSubmit: SubmitHandler<IUser> = (data) => {
         auth.signin(data.username, data.password, (isLoggedIn:boolean, _errors:IUserErrors[] | null)=>{
             if (isLoggedIn){
-                navigate(from, { replace: true });
+                navigate('/boards',{replace:true});
             }else{
                 if (_errors){
                     _errors.forEach(({ name, type, message }) => setError(name, {type, message}));

@@ -12,13 +12,15 @@ import Logout from "./routes/Logout/Logout";
 import SignUp from "./routes/SignUp/SignUp";
 import NotFound from './routes/NotFound/NotFound';
 import Boards from './routes/Boards/Boards';
+import Index from "./routes/Index/Index";
 import './App.css'
 export default function App() {
   return (
     <AuthProvider>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<PublicPage />} />
+          <Route path="/" element={<Index />} />
+          <Route path="/index" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route 
@@ -43,8 +45,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-
-function PublicPage() {
-  return <h3>Public</h3>;
-}
-
