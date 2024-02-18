@@ -7,6 +7,9 @@ const emulateSigninDelay = 1000;
 const emulateSignupDelay = 1300;
 class FakeAuthProvider{
     private static userList:IUser[] = [];
+    static get usersCount():number{
+        return FakeAuthProvider.userList.length;
+    }
     static isAuthenticated = false;
     static signup(newUser:IUser, callback: (user:IUser| null, errors:IUserErrors[] | null)=>void) {
         //Имитируем запрос на сервер

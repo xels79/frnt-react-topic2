@@ -9,7 +9,10 @@ type SideDrawerProps ={
 export const SideDrawer=({handleDrawerToggle, brandName}:SideDrawerProps)=>{
     const auth = useAuth();
     const navigate = useNavigate();
-    const navItems = useNavItems(auth.user?(auth.user.lastName+' '+auth.user.firstName?.substring(0,1).toUpperCase()+'.'):'');
+    const navItems = useNavItems(
+        auth.user?(auth.user.lastName+' '+auth.user.firstName?.substring(0,1).toUpperCase()+'.'):'',
+        auth.userCount()
+    );
     const location = useLocation();
     return <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
     <Typography variant="h6" sx={{ my: 2 }}>{brandName}</Typography>

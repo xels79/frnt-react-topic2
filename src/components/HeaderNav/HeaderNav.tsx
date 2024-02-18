@@ -5,7 +5,10 @@ import useAuth from '../../hooks/UseAuth';
 export default function HeaderNav(){
     const auth = useAuth();
     const navigate = useNavigate();
-    const navItems = useNavItems(auth.user?(auth.user.lastName+' '+auth.user.firstName?.substring(0,1).toUpperCase()+'.'):'');
+    const navItems = useNavItems(
+        auth.user?(auth.user.lastName+' '+auth.user.firstName?.substring(0,1).toUpperCase()+'.'):'',
+        auth.userCount()
+    );
     const location = useLocation();
     return <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
         {navItems.map((item:IList,index) => (

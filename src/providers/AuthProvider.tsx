@@ -21,7 +21,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
             callback(user!==null,_errors);
         });
     };
-
+    const userCount = ()=>FakeAuthProvider.usersCount;
     const signout = (callback: VoidFunction) => {
         return FakeAuthProvider.signout(() => {
             setUser(null);
@@ -29,7 +29,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         });
     };
 
-    const value  = { user, signup, signin, signout, isLoggetIn } ;
+    const value  = { user, signup, signin, signout, isLoggetIn, userCount } ;
 
     return <AuthContext.Provider value={value as any}>{children}</AuthContext.Provider>;
 }  

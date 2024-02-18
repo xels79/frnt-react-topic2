@@ -67,12 +67,12 @@ export default function SignUp() {
                     required
                     fullWidth
                     id="firstName"
-                    label="Фамилия"
+                    label="Имя"
                     autoFocus
                     {...register("firstName",{
                         required:{
                             value:true,
-                            message:'Поле "Фамилия" должнобыть заполнено'
+                            message:'Поле "Имя" должнобыть заполнено'
                         }
                     })}
                     error={typeof(errors.firstName)==='object'}
@@ -84,12 +84,12 @@ export default function SignUp() {
                     required
                     fullWidth
                     id="lastName"
-                    label="Имя"
+                    label="Фамилия"
                     autoComplete="family-name"
                     {...register("lastName",{
                         required:{
                             value:true,
-                            message:'Поле "Имя" должнобыть заполнено'
+                            message:'Поле "Фамилия" должнобыть заполнено'
                         }
                     })}
                     error={typeof(errors.lastName)==='object'}
@@ -102,7 +102,6 @@ export default function SignUp() {
                     fullWidth
                     id="username"
                     label="Имя пользователя"
-                    autoComplete="username"
                     {...register("username",{
                         required:{
                             value:true,
@@ -165,9 +164,12 @@ export default function SignUp() {
                 >
                 Зарегистрироваться
                 </Button>
-                <Grid container justifyContent="flex-end">
-                <Grid item>Уже есть акаунт <Link onClick={()=>navigate('/login',{ replace: true })} variant="body2">войти</Link>?</Grid>
-                </Grid>
+                {auth.userCount()>0 &&
+                <>
+                    <Grid container justifyContent="flex-end">
+                        <Grid item>Уже есть акаунт <Link onClick={()=>navigate('/login',{ replace: true })} variant="body2">войти</Link>?</Grid>
+                    </Grid>
+                </>}
             </Box>
             </Box>
         </Container>

@@ -9,7 +9,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/UseAuth';
 import { useForm, SubmitHandler } from "react-hook-form"
 import IUser from '../../interfaces/IUser'
@@ -46,6 +46,8 @@ export default function Login() {
     }
 
 return (
+    <>
+    {auth.userCount()>0 &&
     <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -111,5 +113,8 @@ return (
             </Box>
         </Container>
     </ThemeProvider>
+    }
+    {!auth.userCount() && <Navigate to='/signup'/>}
+    </>
     );
 }

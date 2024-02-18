@@ -4,7 +4,7 @@ export interface IList{
     disabled:boolean
 }
 
-export default function useNavItems(username: string=''):IList[]{
+export default function useNavItems(username: string='', userCount:number = 0):IList[]{
     const navItems:IList[] = [
         {
             label:'Публичная',
@@ -24,11 +24,13 @@ export default function useNavItems(username: string=''):IList[]{
             disabled:false
         });
     }else{
-        navItems.push({
-            label:"Войти",
-            path:'/Login',
-            disabled:false
-        });
+        if (userCount){
+            navItems.push({
+                label:"Войти",
+                path:'/Login',
+                disabled:false
+            });
+        }
         navItems.push({
             label:"Зарегистрироваться",
             path:'/signup',
