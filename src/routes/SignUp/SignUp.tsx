@@ -14,6 +14,8 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import useAuth from '../../hooks/UseAuth';
 import IUser from '../../interfaces/IUser'
 import IUserErrors from '../../interfaces/IUserErrors'
+import { CircularProgress } from '@mui/material';
+import { useState } from 'react';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -27,11 +29,14 @@ export default function SignUp() {
     } = useForm<IUser>();
     const navigate = useNavigate();
     const auth = useAuth();
+    const [showBusy, setBusy] = useState(false);
     const onSubmit: SubmitHandler<IUser> = (data) => {
+        setBusy(true);
         auth.signup(data, (isLoggetIn, _errors:IUserErrors[] | null)=>{
             if (isLoggetIn){
                 navigate('/boards', { replace: true });
             }else{
+                setBusy(false);
                 if (_errors){
                     _errors.forEach(({ name, type, message }) => setError(name, {type, message}));
                 }else{
@@ -161,8 +166,10 @@ export default function SignUp() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={showBusy}
                 >
-                Зарегистрироваться
+                {showBusy && <CircularProgress size={24} />}
+                {!showBusy && "Зарегистрироваться"}
                 </Button>
                 {auth.userCount()>0 &&
                 <>

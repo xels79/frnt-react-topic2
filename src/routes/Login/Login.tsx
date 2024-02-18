@@ -14,17 +14,19 @@ import useAuth from '../../hooks/UseAuth';
 import { useForm, SubmitHandler } from "react-hook-form"
 import IUser from '../../interfaces/IUser'
 import IUserErrors from '../../interfaces/IUserErrors';
+import { CircularProgress } from '@mui/material';
+import { useState } from 'react';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function Login() {
     const navigate = useNavigate();
-    const location = useLocation();
     const auth = useAuth();
     // const [uNameError, setUNameError]=React.useState('');
     // const [passwordError, setPasswordError]=React.useState('');
     //const from = location.state?.from?.pathname || "/";
+    const [showBusy, setBusy] = useState(false);
     const {
         register,
         handleSubmit,
@@ -32,10 +34,12 @@ export default function Login() {
         formState: { errors },
     } = useForm<IUser>();
     const onSubmit: SubmitHandler<IUser> = (data) => {
+        setBusy(true);
         auth.signin(data.username, data.password, (isLoggedIn:boolean, _errors:IUserErrors[] | null)=>{
             if (isLoggedIn){
                 navigate('/boards',{replace:true});
             }else{
+                setBusy(false);
                 if (_errors){
                     _errors.forEach(({ name, type, message }) => setError(name, {type, message}));
                 }else{
@@ -105,8 +109,10 @@ return (
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    disabled={showBusy}
                     >
-                    Sign In
+                    {showBusy && <CircularProgress size={24} />}
+                    {!showBusy && "Войти"}
                     </Button>
                     <Box textAlign="right">Нет акаунта <Link href="#" onClick={()=>navigate('/signup',{ replace: true })} variant="body2">зарегистрируйтесь.</Link></Box>
                 </Box>
