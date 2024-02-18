@@ -1,36 +1,65 @@
 /**
  * This represents some generic auth provider API, like Firebase.
  */
+// import IUser from "../interfaces/IUser";
 import IUser from "../interfaces/IUser";
+import IUserErrors from "../interfaces/IUserErrors";
 class YII2AuthProvider{
     static isAuthenticated = false;
-    static signin(username:string, password:string, callback: (user:IUser| null, message:string)=>void) {
-        fetch("http://a-xels.ru/micro/index.php?r=main/login",{
+    static signin(username: string, password:string, callback: (user:IUser | null, _errors:IUserErrors[] | null)=>void) {
+        const f = new FormData();
+        f.append("LoginForm[username]",username);
+        f.append("LodinForm[password]",password);
+        fetch("http://a-xels.ru:8100",{
             method:"POST",
+            credentials: "include",
             headers:{
                 'Content-Type': 'application/json'
             },
-            body:JSON.stringify({
-                LoginForm:{
-                    username:username,
-                    password:password
-                }
-            })
+            body:'{}'
+            // body:JSON.stringify({
+            //     LoginForm:{
+            //         username:username,
+            //         password:password
+            //     }
+            // })
         })
         .then(anwer=>anwer.json())
         .then(result=>{
-            if (result.status==='ok'){
-                callback({
-                    username:result.LoadForm.username
-                },'');
-            }else{
-                console.log(Object.keys(result.LoginForm).reduce((old,el)=>old+result.LoginForm[el],''))
-                callback(null,Object.keys(result.LoginForm).reduce((old,el)=>!old?old:(', '+old)+result.LoginForm[el],''));
-            }
-        })
+            fetch("http://a-xels.ru:8100/index.php?r=main/login",{
+                method:"POST",
+                credentials: "include",
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    LoginForm:{
+                        username:username,
+                        password:password
+                    }
+                })
+            })
+            .then(anwer=>anwer.json())
+            .then(result=>{
+                // if (result.status==='ok'){
+                //     callback({
+                //         username:result.LoadForm.username
+                //     },'');
+                // }else{
+                    console.log(Object.keys(result.LoginForm).reduce((old,el)=>old+result.LoginForm[el],''))
+                    callback(null,[
+                        { name:'username', message:"Пользователь не найден,", type:'server' },
+                        { name:'password', message:'или не верный пароль.', type:'server' }
+                    ]);
+                // }
+            })
+            })
         .catch(error=>{
             console.error(error);
-            callback(null, 'Network error.');
+            callback(null, [
+                { name:'username', message:"Пользователь не найден,", type:'server' },
+                { name:'password', message:'или не верный пароль.', type:'server' }
+            ]);
         })
         // setTimeout(()=>{
         //     FakeAuthProvider.isAuthenticated = true;
