@@ -10,19 +10,19 @@ class YII2AuthProvider{
         const f = new FormData();
         f.append("LoginForm[username]",username);
         f.append("LodinForm[password]",password);
-        fetch("http://a-xels.ru:8100",{
-            method:"POST",
+        fetch("http://a-xels.ru:8100/index.php?r=main/login",{
+            // method:"POST",
             credentials: "include",
             headers:{
                 'Content-Type': 'application/json'
             },
-            body:'{}'
-            // body:JSON.stringify({
-            //     LoginForm:{
-            //         username:username,
-            //         password:password
-            //     }
-            // })
+            // body:'{}'
+            // // body:JSON.stringify({
+            // //     LoginForm:{
+            // //         username:username,
+            // //         password:password
+            // //     }
+            // // })
         })
         .then(anwer=>anwer.json())
         .then(result=>{
