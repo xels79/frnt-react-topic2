@@ -4,7 +4,7 @@
 // import IUser from "../interfaces/IUser";
 import IUser from "../interfaces/IUser";
 import IUserErrors from "../interfaces/IUserErrors";
-import axios from 'axios'
+// import axios from 'axios'
 class YII2AuthProvider{
     static isAuthenticated = false;
     static signin(username: string, password:string, callback: (user:IUser | null, _errors:IUserErrors[] | null)=>void) {

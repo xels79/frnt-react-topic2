@@ -1,7 +1,7 @@
 
 import React from "react";
 import {FakeAuthProvider} from './FakeAuthProvider'
-import { YII2AuthProvider } from "./YII2AuthProvider";
+// import { YII2AuthProvider } from "./YII2AuthProvider";
 import AuthContext from '../contexts/AuthContext'
 import IUser from "../interfaces/IUser";
 import IUserErrors from "../interfaces/IUserErrors";
@@ -16,7 +16,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         });
     };
     const signin = (username: string, password:string, callback: (isLoggedIn:boolean, errors:IUserErrors[] | null)=>void) => {
-        return YII2AuthProvider.signin(username, password, (user:IUser | null, _errors:IUserErrors[] | null) => {
+        return FakeAuthProvider.signin(username, password, (user:IUser | null, _errors:IUserErrors[] | null) => {
             setUser(user);
             callback(user!==null,_errors);
         });
