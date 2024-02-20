@@ -4,31 +4,42 @@
 // import IUser from "../interfaces/IUser";
 import IUser from "../interfaces/IUser";
 import IUserErrors from "../interfaces/IUserErrors";
+import axios from 'axios'
 class YII2AuthProvider{
     static isAuthenticated = false;
     static signin(username: string, password:string, callback: (user:IUser | null, _errors:IUserErrors[] | null)=>void) {
         const f = new FormData();
         f.append("LoginForm[username]",username);
         f.append("LodinForm[password]",password);
-        fetch("http://a-xels.ru:8100/index.php?r=main/login",{
-            // method:"POST",
-            credentials: "include",
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            // body:'{}'
-            // // body:JSON.stringify({
-            // //     LoginForm:{
-            // //         username:username,
-            // //         password:password
-            // //     }
-            // // })
-        })
+        // axios({
+        //     method: 'post',
+        //     //mode: 'cors',
+        //     url: 'http://a-xels.ru:8100/index.php?r=main/login',
+        //     headers:{
+        //         'Content-Type': 'application/json',
+                
+        //     },
+        //     data: {
+        //         firstName: 'Fred',
+        //         lastName: 'Flintstone'
+        //     }          
+        // })
+        // .then(function (response) {
+        //     console.log(response.data)
+        // });;
+        fetch("http://a-xels.ru:8100/index.php?r=user/login",{
+//            mode: "cors",
+            // credentials: "include",
+                // headers:{
+                //     'Content-Type': 'application/json'
+                // },
+  //              body:JSON.stringify({})
+            })
         .then(anwer=>anwer.json())
         .then(result=>{
-            fetch("http://a-xels.ru:8100/index.php?r=main/login",{
+            console.log(result);
+            fetch(`http://a-xels.ru:8100/index.php?r=user/login&access-token=${result.token}`,{
                 method:"POST",
-                credentials: "include",
                 headers:{
                     'Content-Type': 'application/json'
                 },
@@ -53,7 +64,7 @@ class YII2AuthProvider{
                     ]);
                 // }
             })
-            })
+        })
         .catch(error=>{
             console.error(error);
             callback(null, [
