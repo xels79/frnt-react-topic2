@@ -1,5 +1,6 @@
+export type TErrorNames = 'username' | 'firstName' | 'lastName' | 'email' | 'password';
 export default interface IUserErrors{
     type:string,
-    name:'username' | 'firstName' | 'lastName' | 'email' | 'password',
+    name:TErrorNames,
     message:string
 }

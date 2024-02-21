@@ -18,6 +18,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const signin = (username: string, password:string, callback: (isLoggedIn:boolean, errors:IUserErrors[] | null)=>void) => {
         return FakeAuthProvider.signin(username, password, (user:IUser | null, _errors:IUserErrors[] | null) => {
             setUser(user);
+            console.log(_errors);
             callback(user!==null,_errors);
         });
     };

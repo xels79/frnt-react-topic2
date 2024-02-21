@@ -3,7 +3,7 @@
  */
 // import IUser from "../interfaces/IUser";
 import IUser from "../interfaces/IUser";
-import IUserErrors from "../interfaces/IUserErrors";
+import IUserErrors, { TErrorNames } from "../interfaces/IUserErrors";
 // import axios from 'axios'
 class YII2AuthProvider{
     static isAuthenticated = false;
@@ -27,43 +27,52 @@ class YII2AuthProvider{
         // .then(function (response) {
         //     console.log(response.data)
         // });;
-        fetch("http://a-xels.ru:8100/index.php?r=user/login",{
-//            mode: "cors",
+        fetch("http://a-xels.ru:8100/login.php",{
+            method:"POST",
+            mode: "cors",
             // credentials: "include",
-                // headers:{
-                //     'Content-Type': 'application/json'
-                // },
-  //              body:JSON.stringify({})
+            headers:{
+                'Content-Type': 'application/json'
+            },
+                body:JSON.stringify({
+                    LoginForm:{
+                        password:password,
+                        username:username
+                    }
+                })
             })
         .then(anwer=>anwer.json())
         .then(result=>{
             console.log(result);
-            fetch(`http://a-xels.ru:8100/index.php?r=user/login&access-token=${result.token}`,{
-                method:"POST",
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body:JSON.stringify({
-                    LoginForm:{
-                        username:username,
-                        password:password
-                    }
+            if (result.status === 'logged'){
+                fetch(`http://a-xels.ru:8100/info.php`,{
+                    method:'GET',
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'a-token':result?.token
+                    },
                 })
-            })
-            .then(anwer=>anwer.json())
-            .then(result=>{
-                // if (result.status==='ok'){
-                //     callback({
-                //         username:result.LoadForm.username
-                //     },'');
-                // }else{
-                    console.log(Object.keys(result.LoginForm).reduce((old,el)=>old+result.LoginForm[el],''))
-                    callback(null,[
-                        { name:'username', message:"Пользователь не найден,", type:'server' },
-                        { name:'password', message:'или не верный пароль.', type:'server' }
-                    ]);
-                // }
-            })
+                .then(anwer=>anwer.json())
+                .then(result2=>{
+                    console.log(result2);
+                });
+            }else if (result.status === 'error'){
+                if (result.LoginForm){
+                    const errKeys=Object.keys(result.LoginForm);
+                    const _errors:IUserErrors[] = errKeys.map((eKey):IUserErrors=>{
+                        return {
+                            type:'server',
+                            name:eKey as TErrorNames,
+                            message:typeof(result.LoginForm[eKey] === 'string')?result.LoginForm[eKey]:result.LoginForm[eKey].join(' ')
+                        }
+                    });
+                    callback(null, _errors);
+                }else{
+                    console.warn('Не известная ошибка!',result);
+                }
+            }else{
+                console.warn('Не известная ошибка!',result);
+            }
         })
         .catch(error=>{
             console.error(error);
