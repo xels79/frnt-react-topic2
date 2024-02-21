@@ -16,7 +16,7 @@ import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {FakeAuthProvider} from '../../providers/FakeAuthProvider'
-import { YII2AuthProvider } from '../../providers/YII2AuthProvider';
+// import { YII2AuthProvider } from '../../providers/YII2AuthProvider';
 import { setUser } from '../../store/slice/auth/authSlice';
 import SignInComponent from '../../components/SignInComponent/SignInComponent'
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -35,7 +35,7 @@ export default function Login() {
     const dispatch = useDispatch();
     const onSubmit: SubmitHandler<IUser> = (data) => {
         setBusy(true);
-        YII2AuthProvider.signin(data.username, data.password,(user:IUser| null, errors:IUserErrors[] | null)=>{
+        FakeAuthProvider.signin(data.username, data.password,(user:IUser| null, errors:IUserErrors[] | null)=>{
             console.log(user);
             setBusy(false);
             dispatch(setUser({errors:errors,user:user,token:'1'}))

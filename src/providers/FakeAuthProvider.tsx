@@ -44,7 +44,7 @@ class FakeAuthProvider{
             
         }, emulateSignupDelay);
     }
-    static signin(username:string, password:string, callback: (user:IUser| null, errors:IUserErrors[] | null)=>void) {
+    static signin(username:string, password:string|undefined, callback: (user:IUser| null, errors:IUserErrors[] | null)=>void) {
         console.log(`FakeAuthProvider: try loggin "${username}"=>"${password}"`);
         console.log(`FakeAuthProvider: users count "${FakeAuthProvider.userList.length}"`);
         console.log(`FakeAuthProvider: emulate server request delay - ${emulateSigninDelay}ms`);
