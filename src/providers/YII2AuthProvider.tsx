@@ -27,7 +27,7 @@ class YII2AuthProvider{
         // .then(function (response) {
         //     console.log(response.data)
         // });;
-        fetch("http://a-xels.ru:8100/login.php",{
+        fetch("/api/login.php",{
             method:"POST",
             mode: "cors",
             // credentials: "include",
@@ -45,7 +45,7 @@ class YII2AuthProvider{
         .then(result=>{
             console.log(result);
             if (result.status === 'logged'){
-                fetch(`http://a-xels.ru:8100/info.php`,{
+                fetch(`/api/postsq/${result.id}`,{
                     method:'GET',
                     headers:{
                         'Content-Type': 'application/json',
