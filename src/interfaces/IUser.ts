@@ -3,5 +3,8 @@ export default interface IUser{
     firstName?:string,
     lastName?:string,
     email?:string,
-    password:string
+    password?:string
+}
+export interface ISignUpUser extends IUser{
+    newpassword?:string
 }

@@ -35,7 +35,7 @@ export default function Login() {
     const dispatch = useDispatch();
     const onSubmit: SubmitHandler<IUser> = (data) => {
         setBusy(true);
-        YII2AuthProvider.signin(data.username, data.password,(user:IUser| null, errors:IUserErrors[] | null)=>{
+        YII2AuthProvider.signin(data.username, data.password as string,(user:IUser| null, errors:IUserErrors[] | null)=>{
             console.log(user);
             setBusy(false);
             dispatch(setUser({errors:errors,user:user,token:'1'}))
