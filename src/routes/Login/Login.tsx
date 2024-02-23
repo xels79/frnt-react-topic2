@@ -10,15 +10,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Navigate } from 'react-router-dom';
 import useAuth from '../../hooks/UseAuth';
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form"
-import IUser from '../../interfaces/IUser'
-import IUserErrors from '../../interfaces/IUserErrors';
 import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 // import {FakeAuthProvider} from '../../providers/FakeAuthProvider'
-import { YII2AuthProvider } from '../../providers/YII2AuthProvider';
-import { setUser } from '../../store/slice/auth/authSlice';
 import SignInComponent from '../../components/SignInComponent/SignInComponent'
+import { LoginChunk } from '../../store/slice/auth/authSlice';
+import { IUserLogin } from '../../interfaces/IUserRedux';
+import useAppDispatch from '../../hooks/AppDispatch'
+// import { IUserLogin } from '../../interfaces/IUserRedux';
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
@@ -28,19 +27,23 @@ export default function Login() {
     // const [passwordError, setPasswordError]=React.useState('');
     //const from = location.state?.from?.pathname || "/";
     const [showBusy, setBusy] = useState(false);
-    const methods = useForm<IUser>();
+    const methods = useForm<IUserLogin>();
     const {
         handleSubmit,
     } = methods;
-    const dispatch = useDispatch();
-    const onSubmit: SubmitHandler<IUser> = (data) => {
+    const dispatch = useAppDispatch();
+    const onSubmit: SubmitHandler<IUserLogin> = (data) => {
         setBusy(true);
-        YII2AuthProvider.signin(data.username, data.password as string,(user:IUser| null, errors:IUserErrors[] | null)=>{
-            console.log(user);
-            setBusy(false);
-            dispatch(setUser({errors:errors,user:user,token:'1'}))
+        dispatch(LoginChunk({
+            username:data.username,
+            password:data.password
+        }))
+        // YII2AuthProvider.signin(data.username, data.password as string,(user:IUser| null, errors:IUserErrors[] | null)=>{
+        //     console.log(user);
+        //     setBusy(false);
+        //     dispatch(setUser({errors:errors,user:user:'1'}))
             
-        });
+        // });
         // auth.signin(data.username, data.password, (isLoggedIn:boolean, _errors:IUserErrors[] | null)=>{
         //     // if (isLoggedIn){
         //     //     navigate('/boards',{replace:true});

@@ -14,5 +14,5 @@ export interface ILoginSignInServerAnswer{
     status?:string,
     token?:string,
     id?:number,
-    username?:string
+    username?:string,
 }
