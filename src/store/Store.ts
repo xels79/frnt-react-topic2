@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import auth from './slice/auth/authSlice';
 //import logger from 'redux-logger';
 const store = configureStore({
-    reducer:{auth},
+    reducer:{ auth },
     devTools:true,
 //    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
 });

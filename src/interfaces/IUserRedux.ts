@@ -14,6 +14,16 @@ export default interface IUser extends IUserLogin, IUserStore{
 export interface ISignUpUser extends IUser{
     newpassword:string
 }
-export interface IUserServerError{
-    
+export interface IToSignUp{
+    user:ISignUpUser,
+    redirectTo?:string
 }
+export interface IToLogin{
+    user:IUserLogin,
+    redirectTo?:string
+}
+export interface IToStore{
+    user:IUserStore,
+    redirectTo?:string
+}
+

@@ -1,11 +1,11 @@
 //import TextField from '@mui/material/TextField';
 import { useFormContext } from "react-hook-form"
 import { TextField, Box, Link } from '@mui/material';
-import IUser from '../../interfaces/IUser';
-import { useNavigate } from 'react-router-dom';
-
+import IUser from '../../interfaces/IUserRedux';
+import { hideSignIn, showSignUp } from '../../store/slice/auth/authSlice'
+import useAppDispatch from "../../hooks/AppDispatch";
 export default function SignInComponent(){
-    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const {
         register,
         formState: { errors },
@@ -54,7 +54,10 @@ export default function SignInComponent(){
                     error={typeof(errors.password)==='object'}
                     helperText={typeof(errors.password)==='object'?errors.password.message:''}
                     />
-                <Box textAlign="right">Нет акаунта <Link href="#" onClick={()=>navigate('/signup',{ replace: true })} variant="body2">зарегистрируйтесь.</Link></Box>
+                <Box textAlign="right">Нет акаунта <Link href="#" onClick={()=>{
+                    dispatch(hideSignIn())
+                    dispatch(showSignUp())
+                }} variant="body2">зарегистрируйтесь.</Link></Box>
             </Box>
     );
 }

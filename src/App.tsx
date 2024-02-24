@@ -4,32 +4,27 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import AuthProvider from './providers/AuthProvider'
 import RequireAuth from './components/RequireAuth/RequireAuth'
 import Layout from "./components/Layout/Layout";
-import Login from "./routes/Login/Login";
 import Logout from "./routes/Logout/Logout";
-import SignUp from "./routes/SignUp/SignUp";
 import NotFound from './routes/NotFound/NotFound';
 import Boards from './routes/Boards/Boards';
 import Index from "./routes/Index/Index";
+import YoutProfile from './routes/YourProfile/YourProfile'
 import './App.css'
 export default function App() {
   return (
-    <AuthProvider>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Index />} />
           <Route path="/index" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route 
+            path="/profile" 
+            element={<RequireAuth><YoutProfile /></RequireAuth>} 
+          />
           <Route 
             path="/logout" 
-            element={
-              <RequireAuth>
-                <Logout />
-              </RequireAuth>
-            } 
+            element={<Logout />} 
           />
           <Route
             path="/boards"
@@ -42,6 +37,5 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </AuthProvider>
   );
 }

@@ -4,43 +4,60 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {  Avatar, Button, ButtonGroup,
         CircularProgress, Dialog, DialogActions,
         DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import IUser from '../../interfaces/IUser';
-import { useState } from 'react';
+import IUser from '../../interfaces/IUserRedux';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import IUserErrors from '../../interfaces/IUserErrors';
-import useAuth from '../../hooks/UseAuth';
+// import IUserErrors from '../../interfaces/IUserErrors';
+// import useAuth from '../../hooks/UseAuth';
 import SignUpComponent from '../SignUpComponent/SignUpComponent'
+import SigUpThunk from "../../store/slice/auth/SigUpThunk";
+import useAppDispatch from '../../hooks/AppDispatch'
+import { RootState } from '../../store/Store'
+import { useSelector } from 'react-redux';
+// import { Navigate } from "react-router-dom";
+import { redirectDone, resetSignUpSuccess } from '../../store/slice/auth/authSlice'
+import { ISignUpUser } from "../../interfaces/IUserRedux";
 
 export default function SignUpDialog({open,handleClose=()=>{console.log('close click')}}:{
     open:boolean,
     handleClose:()=>void
 }){
-    const [showBusy, setBusy] = useState(false);
+    const showBusy = useSelector((state:RootState)=>state.auth.pending);
+    const isLoggetIn = useSelector((state:RootState)=>state.auth.user !== null);
+    const isSignUpSuccess = useSelector((state:RootState)=>state.auth.isSignUpSuccess);
+    const dispatch = useAppDispatch();
+    const errors = useSelector((state:RootState)=>state.auth.errors);
+    const methods = useForm<IUser>();
+    const redirectTo = useSelector((state:RootState)=>state.auth.redirectTo);
     const navigate = useNavigate();
-    const method = useForm<IUser>();
     const {
         handleSubmit,
+        reset,
         setError,
-    } = method;
-    const auth = useAuth();
+    } = methods;
     const onSubmit: SubmitHandler<IUser> = (data) => {
-        setBusy(true);
-        auth.signup(data, (isLoggetIn, _errors:IUserErrors[] | null)=>{
-            if (isLoggetIn){
-                navigate('/boards', { replace: true });
-            }else{
-                setBusy(false);
-                if (_errors){
-                    _errors.forEach(({ name, type, message }) => setError(name, {type, message}));
-                }else{
-                    console.error('Неизвестная ошибка.');
-                }
-            }
-        })
+        dispatch(SigUpThunk({
+            user:data as ISignUpUser,
+            redirectTo:'/boards'
+        }));
     };
+    useEffect(()=>{
+        if (errors){
+            errors.forEach(({ name, type, message }) => setError(name as 'password'|'username', {type, message}));
+        }
+        if (redirectTo){
+            navigate(redirectTo, {replace:true});
+            dispatch(redirectDone());
+        }
+        if (isSignUpSuccess){
+            reset();
+            dispatch(resetSignUpSuccess());
+        }
+        },[errors, redirectTo, isSignUpSuccess]);
 
     return (
-        <FormProvider {... method}>
+        <>{!isLoggetIn &&
+        <FormProvider {... methods}>
         <Dialog
             open={open}
             onClose={handleClose}
@@ -71,6 +88,6 @@ export default function SignUpDialog({open,handleClose=()=>{console.log('close c
                 </ButtonGroup>
             </DialogActions>
         </Dialog>
-        </FormProvider>
+        </FormProvider>}</>
     );
 }

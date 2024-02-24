@@ -1,17 +1,16 @@
 //import TextField from '@mui/material/TextField';
 import {  useFormContext } from "react-hook-form"
 import { TextField, Box, Grid, Link } from '@mui/material';
-import IUser from '../../interfaces/IUser';
-import { useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/UseAuth';
+import {ISignUpUser} from '../../interfaces/IUserRedux';
+import { showSignIn, hideSignUp } from '../../store/slice/auth/authSlice'
+import useAppDispatch from "../../hooks/AppDispatch";
 
 export default function SignUpComponent(){
-    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const {
         register,
         formState: { errors },
-    } = useFormContext<IUser>();
-    const auth = useAuth();
+    } = useFormContext<ISignUpUser>();
 
     return (
             <Box
@@ -64,7 +63,7 @@ export default function SignUpComponent(){
                     <TextField
                     required
                     fullWidth
-                    id="username"
+                    id="signup_username"
                     label="Имя пользователя"
                     {...register("username",{
                         required:{
@@ -102,10 +101,10 @@ export default function SignUpComponent(){
                     required
                     fullWidth
                     label="Пароль"
-                    type="password"
-                    id="password"
+                    type="newpassword"
+                    id="newpassword"
                     autoComplete="new-password"
-                    {...register("password",{
+                    {...register("newpassword",{
                         required:{
                             value:true,
                             message:'Поле "Пароль" должнобыть заполнено'
@@ -120,13 +119,12 @@ export default function SignUpComponent(){
                     />
                 </Grid>
                 </Grid>
-                {auth.userCount()>0 &&
-                <>
-                    <Grid container justifyContent="flex-end">
-                        <Grid item sx={{mt:2}}>Уже есть акаунт <Link href="#" onClick={()=>navigate('/login',{ replace: true })}>войти</Link>?</Grid>
-                    </Grid>
-                </>}
-            {/* </Box> */}
+                <Grid container justifyContent="flex-end">
+                    <Grid item sx={{mt:2}}>Уже есть акаунт <Link href="#" onClick={()=>{
+                        dispatch(hideSignUp());
+                        dispatch(showSignIn());
+                    }}>войти</Link>?</Grid>
+                </Grid>
             </Box>
     );
 }

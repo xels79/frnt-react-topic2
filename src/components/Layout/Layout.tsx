@@ -6,10 +6,22 @@ import Copyright from '../../components/Copyright/Copyright';
 import { Outlet } from 'react-router-dom';
 import Header from '../Header/Header';
 import Toolbar from '@mui/material/Toolbar';
-// TODO remove, this demo shouldn't need to reset the theme.
+
+import SignUpDialog from '../Dialogs/SignUpDialog';
+import SignInDialog from '../Dialogs/SignInDialog';
+import { hideSignIn, hideSignUp } from '../../store/slice/auth/authSlice'
+import { RootState } from '../../store/Store'
+import { useSelector } from 'react-redux';
+import useAppDispatch from '../../hooks/AppDispatch';
 
 export default function Layout(){
+    const showSignUp = useSelector((state:RootState)=>state.auth.showSignUpDialog);
+    const showSignIn = useSelector((state:RootState)=>state.auth.showSignInDialog);
+    
+    const dispatch = useAppDispatch();
+
     return (
+        <>
         <Box
             sx={{
             display: 'flex',
@@ -56,5 +68,8 @@ export default function Layout(){
             </Container>
             </Box>
         </Box>
+        <SignUpDialog open={showSignUp} handleClose={()=>{dispatch(hideSignUp())}} />
+        <SignInDialog open={showSignIn} handleClose={()=>{dispatch(hideSignIn())}} />
+        </>
     );
 }

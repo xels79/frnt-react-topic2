@@ -1,39 +1,32 @@
 import { Button, ButtonGroup, Typography } from "@mui/material";
-import useAuth from "../../hooks/UseAuth";
-// import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import SignUpDialog from '../../components/Dialogs/SignUpDialog';
-import SignInDialog from '../../components/Dialogs/SignInDialog'
+// import { useEffect, useState } from "react";
+// import SignUpDialog from '../../components/Dialogs/SignUpDialog';
+// import SignInDialog from '../../components/Dialogs/SignInDialog'
+import { RootState } from '../../store/Store'
+import { useSelector } from 'react-redux';
+import { showSignIn, showSignUp } from '../../store/slice/auth/authSlice'
+import useAppDispatch from '../../hooks/AppDispatch';
 export default function Index(){
-    const auth=useAuth();
-    const userInfo = auth.user?(auth.user?.lastName+ ' ' +auth.user.firstName?.substring(0,1)):'';
-    const [showSignUp,setShowSignUp] = useState<boolean>(false);
-    const [showSignIn,setShowSignIn] = useState<boolean>(false);
-    const [isLogin,setIslogin] = useState<boolean>(false);
-    useEffect(()=>{
-        console.log("start check");
-        auth.checkStatus((user)=>{
-            console.log("end check");
-            if(user){
-                setIslogin(true);
-            }
-        });
-    });
+    //const auth=useAuth();
+    const userInfo = useSelector((state:RootState)=>state.auth.user?(state.auth.user?.lastName+ ' ' +state.auth.user.firstName?.substring(0,1)):'');
+    // const [showSignUp,setShowSignUp] = useState<boolean>(false);
+    // const [showSignIn,setShowSignIn] = useState<boolean>(false);
+    const isLogin = useSelector((state:RootState)=>state.auth.user !== null);
+    const dispatch = useAppDispatch();
+    // useEffect(()=>{
+    //     if (isLogin){
+    //         setShowSignIn(false);
+    //     }
+    // },[isLogin]);
     return <>
-        {/* {!auth.user &&
-            <ButtonGroup color="primary">
-                <Button onClick={()=>navigate('/signup')}>Зарегистрироваться</Button>
-                {auth.userCount()>0 && <Button onClick={()=>navigate('/login')}>Войти</Button>}
-            </ButtonGroup>
-        } */}
         {!isLogin &&
             <ButtonGroup color="primary">
-                <Button onClick={()=>{setShowSignUp(true)}}>Зарегистрироваться</Button>
-                {auth.userCount()>0 && <Button onClick={()=>{setShowSignIn(true)}}>Войти</Button>}
+                <Button onClick={()=>{dispatch(showSignUp())}}>Зарегистрироваться</Button>
+                {!isLogin && <Button onClick={()=>{dispatch(showSignIn())}}>Войти</Button>}
             </ButtonGroup>
         }
         {isLogin && <Typography>Вы вошли как "{userInfo}"</Typography>}
-        <SignUpDialog open={showSignUp} handleClose={()=>{setShowSignUp(false)}} />
-        <SignInDialog open={showSignIn} handleClose={()=>{setShowSignIn(false)}} />
+        {/* <SignUpDialog open={showSignUp} handleClose={()=>{setShowSignUp(false)}} />
+        <SignInDialog open={showSignIn} handleClose={()=>{setShowSignIn(false)}} /> */}
     </>
 }

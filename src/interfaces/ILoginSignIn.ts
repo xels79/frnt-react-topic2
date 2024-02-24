@@ -1,4 +1,7 @@
-import IUser, { ISignUpUser } from "./IUser"
+import IUser,{ IUserStore,ISignUpUser } from "./IUserRedux"
+export interface ILoginMinServerAnswer{
+    status?:string,
+}
 export interface ILoginSignInServerErrors{
     email?:string[],
     firstName?:string[],
@@ -8,10 +11,9 @@ export interface ILoginSignInServerErrors{
     password?:string[]
 }
 
-export interface ILoginSignInServerAnswer{
-    LoginForm?:IUser|ILoginSignInServerErrors,
+export interface ILoginSignInServerAnswer extends ILoginMinServerAnswer{
+    LoginForm?:IUser|ILoginSignInServerErrors|IUserStore,
     SignUpForm?:ISignUpUser|ILoginSignInServerErrors,
-    status?:string,
     token?:string,
     id?:number,
     username?:string,
