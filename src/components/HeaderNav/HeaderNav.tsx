@@ -11,7 +11,7 @@ export default function HeaderNav(){
     const user = useSelector((state:RootState)=>state.auth.user);
     const dispatch = useAppDispatch();
     const navItems = useNavItems(
-        user?(user.lastName+' '+user.firstName?.substring(0,1).toUpperCase()+'.'):'',
+        user?(user.firstName+' '+user.lastName?.substring(0,1).toUpperCase()+'.'):'',
     );
     const location = useLocation();
     return <Box sx={{ display: { xs: 'none', sm: 'block' } }}>

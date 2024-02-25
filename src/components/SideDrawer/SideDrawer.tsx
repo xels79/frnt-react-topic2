@@ -14,7 +14,7 @@ export const SideDrawer=({handleDrawerToggle, brandName}:SideDrawerProps)=>{
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const navItems = useNavItems(
-        user?(user.lastName+' '+user.firstName?.substring(0,1).toUpperCase()+'.'):'',
+        user?(user.firstName+' '+user.lastName?.substring(0,1).toUpperCase()+'.'):'',
     );
     const location = useLocation();
     return <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { UserGetThunk } from './UserGetThunk'
-import { IUserUpdate, IUserToServer } from '../../../interfaces/IUserRedux'
+import { IUserUpdate } from '../../../interfaces/IUserRedux'
 import { UserSaveThunk } from './UserSaveThunk'
 import IUserErrors from '../../../interfaces/IUserErrors'
 import prepareErrorMessages from '../auth/prepareErrorMessages'

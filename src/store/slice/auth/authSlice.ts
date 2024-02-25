@@ -1,9 +1,11 @@
+import { IUserStore } from './../../../interfaces/IUserRedux';
 import { initialState } from './AuthInitialState';
-import { createSlice } from '@reduxjs/toolkit'
+import { createAction, createSlice } from '@reduxjs/toolkit'
 import LoginThunk from './LoginThunk';
 import LogoutThunk from './LogoutThunk';
 import SigUpThunk from './SigUpThunk';
 import prepareErrorMessages from './prepareErrorMessages';
+export const internalUpdateUser = createAction<IUserStore|null, 'userUpdate'>('userUpdate')
 export const slice = createSlice({
     name:"auth",
     initialState,
@@ -16,9 +18,12 @@ export const slice = createSlice({
         resetSignSuccess:state=>{state.isSignInSuccess=false},
         setSignUpSuccess:state=>{state.isSignUpSuccess=true},
         resetSignUpSuccess:state=>{state.isSignUpSuccess=false},
-        redirectDone:state=>{state.redirectTo=''},
+        redirectDone:state=>{state.redirectTo=''}
     },
     extraReducers: (builder) => {
+        builder.addCase(internalUpdateUser, (state, { payload })=>{
+            state.user = payload;
+        })
         builder.addCase(LoginThunk.fulfilled, (state, { payload }) => {
             state.user = payload.user;
             state.redirectTo = payload.redirectTo;
@@ -62,10 +67,13 @@ export const slice = createSlice({
         builder.addCase(SigUpThunk.pending, (state)=>{
             state.pending = true;
         })
-        builder.addCase(LogoutThunk.fulfilled,(state)=>{
+        builder.addCase(LogoutThunk.fulfilled,(state, {payload})=>{
             state.errors=null;
             state.pending=false;
             state.user=null;
+            if (typeof(payload)==='string'){
+                state.redirectTo=payload;
+            }
             window.localStorage.removeItem("TesyReacyProject_userStore");
         })
         builder.addCase(LogoutThunk.rejected,(state)=>{
