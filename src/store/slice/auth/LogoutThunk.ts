@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ILoginMinServerAnswer } from "../../../interfaces/ILoginSignIn";
+import { clearMessage } from '../UserREST/UserRESTSlice'
 
 const LogoutThunk = createAsyncThunk<
     null,
@@ -16,7 +17,8 @@ const LogoutThunk = createAsyncThunk<
         })
         .then(answer=>answer.json())) as ILoginMinServerAnswer;
         if (response.status==='not auth'){
-            return null;//user;
+            thunkApi.dispatch(clearMessage());
+            return null;
         }else{
             console.log('Ошибки:', response);
             return thunkApi.rejectWithValue('Ошибка сервера');    

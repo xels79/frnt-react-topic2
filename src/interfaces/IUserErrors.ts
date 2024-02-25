@@ -1,4 +1,4 @@
-export type TErrorNames = 'username' | 'firstName' | 'lastName' | 'email' | 'password' | 'newpassword';
+export type TErrorNames = 'username' | 'firstName' | 'lastName' | 'email' | 'password' | 'newpassword' | 'oldpassword' | 'id';
 
 export default interface IUserErrors{
     type:string,

@@ -8,9 +8,26 @@ export interface ILoginSignInServerErrors{
     lastName?:string[],
     newpassword?:string[],
     username?:string[],
-    password?:string[]
+    password?:string[],
+    oldpassword?:string[],
+    id?:string[]
 }
-
+export interface IDefaultServerError{
+    code:number,
+    message:string,
+    name:string,
+    type:string,
+    status:number
+}
+export interface IUserUpdateServerErrors{
+    id?:string[],
+    email?:string[],
+    firstName?:string[],
+    lastName?:string[],
+    newpassword?:string[],
+    username?:string[],
+    oldpassword?:string[]
+}
 export interface ILoginSignInServerAnswer extends ILoginMinServerAnswer{
     LoginForm?:IUser|ILoginSignInServerErrors|IUserStore,
     SignUpForm?:ISignUpUser|ILoginSignInServerErrors,
