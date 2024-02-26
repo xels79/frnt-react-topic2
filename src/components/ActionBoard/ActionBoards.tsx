@@ -1,13 +1,12 @@
 import ActionBoard from "./ActionBoard"
-import { IActionBoard } from "./ActionBoard"
-let boardCount = 0;
+import { ITodo, ITodoAction } from "../../interfaces/ITodo";
 export default function ActionBoards({ boards }:{
-    boards:IActionBoard[]
+    boards:ITodo[]
 }){
     return <>{boards.map((board, index)=><ActionBoard
         key={`abs-${index}`}
-        header={board.header}
-        data={board.data}
-        actionList={board.actionList}
+        header={board.name}
+        data={board.created_a}
+        actionList={board.todoActions as ITodoAction[]}
     />)}</>
 }

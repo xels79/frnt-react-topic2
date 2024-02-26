@@ -25,7 +25,7 @@ export const slice = createSlice({
     initialState,
     reducers:{
         clearMessage:(state)=>{
-            console.log('action clearMeaa');
+            console.log('UserRest action clearMessage');
             state.message=null;
         }
     },

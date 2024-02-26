@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import auth from './slice/auth/authSlice';
 import UserRest from './slice/UserREST/UserRESTSlice'
+import TodoSlice from './slice/Todos/TodosSlice'
 //import logger from 'redux-logger';
 const store = configureStore({
-    reducer:{ auth, UserRest },
+    reducer:{ auth, UserRest, TodoSlice },
     devTools:true,
 //    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
 });
