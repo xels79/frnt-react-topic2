@@ -11,7 +11,7 @@ export const initialState= ():IAuthorizethion=>{
             showSignUpDialog:false,
             redirectTo:'',
             isSignInSuccess:false,
-            isSignUpSuccess:false
+            isSignUpSuccess:false,
         }
     }else{
         return {

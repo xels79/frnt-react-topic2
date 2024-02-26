@@ -9,7 +9,10 @@ export interface IUserLogin extends IUserBase{
 export interface IUserStore extends IUserBase{
     firstName:string,
     lastName:string,
-    id:number
+    id:number,
+    option?:{
+        showOnlyMyBoards:boolean
+    }
 }
 export default interface IUser extends IUserLogin, IUserStore{
     email:string,
