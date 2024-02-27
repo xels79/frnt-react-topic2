@@ -14,6 +14,15 @@ export interface ITodo{
     updated_at:string,
     todoActions:ITodoAction[]|string
 }
+export interface ITodoWithPagination{
+    todos:ITodo[],
+    pagination:{
+        currentPage:number,
+        pageCount:number,
+        perPage:number,
+        totalCount:number
+    }
+}
 export type TTodoActionKeys = Record<(keyof ITodoAction), string>;
 export type TTodosKeys = Record<(keyof ITodo), string>;
 export interface ITodoServerErrors{

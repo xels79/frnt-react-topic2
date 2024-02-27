@@ -9,6 +9,7 @@ const LogoutThunk = createAsyncThunk<
         rejectValue:string
     }
     >('auth/LogoutThunk', async (data, thunkApi) => {
+    console.log('Logout request');
     try{
         const response = (await fetch(`/api/logout.php`,{
             method:"POST",
