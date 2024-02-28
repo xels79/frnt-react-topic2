@@ -65,6 +65,10 @@ export default function YourProfile(){
                     required:{
                         value:true,
                         message:'Поле "Имя пользователя" должнобыть заполнено'
+                    },
+                    pattern:{
+                        value:/^[^\&\s^\=^\+^\\\/\|\.\"\']+$/,
+                        message:'Не допустимые символы.'
                     }
                 })}
                 error={typeof(errors.username)==='object'}

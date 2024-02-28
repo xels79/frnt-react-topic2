@@ -69,7 +69,11 @@ export default function SignUpComponent(){
                         required:{
                             value:true,
                             message:'Поле "Имя пользователя" должнобыть заполнено'
-                        }
+                        },
+                        pattern:{
+                            value:/^[^\&\s^\=^\+^\\\/\|\.\'\"]+$/,
+                            message:'Не допустимые символы.'
+                        }    
                     })}
                     error={typeof(errors.username)==='object'}
                     helperText={typeof(errors.username)==='object'?errors.username.message:''}
