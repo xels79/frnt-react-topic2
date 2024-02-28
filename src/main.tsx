@@ -8,12 +8,26 @@ import './index.css'
 import App from './App'
 import store from './store/Store';
 import { Provider } from 'react-redux';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ruRU } from '@mui/material/locale';
+
+const theme = createTheme(
+  {
+    // palette: {
+    //   primary: { main: '#1976d2' },
+    // },
+  },
+  ruRU,
+);
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>
 )

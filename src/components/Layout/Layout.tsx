@@ -13,11 +13,10 @@ import { hideSignIn, hideSignUp } from '../../store/slice/auth/authSlice'
 import { RootState } from '../../store/Store'
 import { useSelector } from 'react-redux';
 import useAppDispatch from '../../hooks/AppDispatch';
-
+import SystemMessages from '../SystemMessages/SystemMessages'
 export default function Layout(){
     const showSignUp = useSelector((state:RootState)=>state.auth.showSignUpDialog);
     const showSignIn = useSelector((state:RootState)=>state.auth.showSignInDialog);
-    
     const dispatch = useAppDispatch();
 
     return (
@@ -44,7 +43,7 @@ export default function Layout(){
                     flex:1
                 }}
             >
-                <Container maxWidth="sm">
+                <Container maxWidth="lg">
                     <Outlet />
                 </Container>
             </Box>
@@ -70,6 +69,7 @@ export default function Layout(){
         </Box>
         <SignUpDialog open={showSignUp} handleClose={()=>{dispatch(hideSignUp())}} />
         <SignInDialog open={showSignIn} handleClose={()=>{dispatch(hideSignIn())}} />
-        </>
+        <SystemMessages/>
+         </>
     );
 }

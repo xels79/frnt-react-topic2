@@ -105,7 +105,7 @@ export default function SignUpComponent(){
                     required
                     fullWidth
                     label="Пароль"
-                    type="newpassword"
+                    type="password"
                     id="newpassword"
                     autoComplete="new-password"
                     {...register("newpassword",{

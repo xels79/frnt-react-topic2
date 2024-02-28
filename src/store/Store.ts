@@ -4,6 +4,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import auth from './slice/auth/authSlice';
 import UserRest from './slice/UserREST/UserRESTSlice'
 import TodoSlice from './slice/Todos/TodosSlice'
+import MessageSlice from './slice/messages/MessageSlice'
 import LogoutThunk from './slice/auth/LogoutThunk';
 //import logger from 'redux-logger';
 export const rtkQueryErrorLogger: Middleware =
@@ -28,7 +29,7 @@ export const rtkQueryErrorLogger: Middleware =
         return next(action)
     }
 const store = configureStore({
-    reducer:{ auth, UserRest, TodoSlice,[TodosQuryApi.reducerPath]: TodosQuryApi.reducer, },
+    reducer:{ auth, UserRest, MessageSlice, TodoSlice,[TodosQuryApi.reducerPath]: TodosQuryApi.reducer, },
     devTools:true,
     middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(rtkQueryErrorLogger).concat(TodosQuryApi.middleware),

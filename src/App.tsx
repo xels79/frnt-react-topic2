@@ -29,7 +29,7 @@ export default function App() {
             element={<Logout />} 
           />
           <Route
-            path="/boards/:only_my/:page?"
+            path="/boards/:ownedbyuser?/page?/:routepage?"
             element={
               <RequireAuth>
                 <Boards />

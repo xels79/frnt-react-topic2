@@ -7,12 +7,19 @@ export interface ITodoAction{
     updated_at:string,
     todo_id:string
 }
+export interface IUserInfo{
+    username:string,
+    firstName:string,
+    lastName:string,
+    shortFI:string
+}
 export interface ITodo{
     id:number|string,
     name:string,
     created_a:string,
     updated_at:string,
-    todoActions:ITodoAction[]|string
+    todoActions:ITodoAction[]|string,
+    user:IUserInfo
 }
 export interface ITodoWithPagination{
     todos:ITodo[],
