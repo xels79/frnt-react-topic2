@@ -6,7 +6,10 @@ import LogoutThunk from './LogoutThunk';
 import SigUpThunk from './SigUpThunk';
 import prepareErrorMessages from './prepareErrorMessages';
 export const internalUpdateUser = createAction<IUserStore|null, 'userUpdate'>('userUpdate')
-export const setShowOnlyMyBoards = createAction<true|false, 'userUpdateSOMB'>('userUpdateSOMB')
+export const setShowOnlyMyBoards = createAction<{
+    showOnlyMyBoards:boolean,
+    boardsPageItemCount:number
+}, 'userUpdateSOMB'>('userUpdateSOMB')
 export const slice = createSlice({
     name:"auth",
     initialState,
@@ -29,15 +32,14 @@ export const slice = createSlice({
         builder.addCase(setShowOnlyMyBoards, (state, { payload })=>{
             if (state.user){
                 if (state.user.option){
-                    state.user.option.showOnlyMyBoards = payload;
-                }else{
-                    state.user.option = {showOnlyMyBoards:payload};
+                    state.user.option = payload;
                 }
                 window.localStorage.setItem("TesyReacyProject_userStore",JSON.stringify(state.user));
             }
         })
         builder.addCase(LoginThunk.fulfilled, (state, { payload }) => {
             state.user = payload.user;
+            state
             state.redirectTo = payload.redirectTo;
             state.pending = false;
             // state.showSignInDialog = false;

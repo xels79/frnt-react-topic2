@@ -11,7 +11,8 @@ export interface IUserStore extends IUserBase{
     lastName:string,
     id:number,
     option?:{
-        showOnlyMyBoards:boolean
+        showOnlyMyBoards:boolean,
+        boardsPageItemCount:number
     }
 }
 export default interface IUser extends IUserLogin, IUserStore{
