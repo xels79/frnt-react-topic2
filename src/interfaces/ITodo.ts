@@ -19,7 +19,8 @@ export interface ITodo{
     created_a:string,
     updated_at:string,
     todoActions:ITodoAction[]|string,
-    user:IUserInfo
+    user:IUserInfo,
+    isNew?:boolean
 }
 export interface ITodoWithPagination{
     todos:ITodo[],

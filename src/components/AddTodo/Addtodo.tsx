@@ -34,7 +34,7 @@ export default function AddTodo(){
                 dispatch(addMessage({type:"error","message":"Ошибка сохранения"}));
             }
         }
-        console.log('addtodo',result);
+        // console.log('addtodo',result);
     },[result]);
 
     return <Stack alignItems="center" component="form" onSubmit={handleSubmit(onSubmit)} direction="row" spacing={2} margin="1rem 2rem">

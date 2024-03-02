@@ -1,15 +1,22 @@
 
-import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress }  from '@mui/material';
+import { Box, Checkbox, FormControlLabel, FormGroup }  from '@mui/material';
 import { ChangeEvent, createContext, useEffect, useState } from 'react';
 import { useTDSGetAllQuery } from '../../store/slice/Todos/TodosQuery';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/Store';
 import { setShowOnlyMyBoards } from '../../store/slice/auth/authSlice';
-import { DataGrid, GridCallbackDetails, GridEventListener, GridPaginationModel, GridRowEditStopReasons, GridRowModesModel, GridRowParams, MuiEvent } from '@mui/x-data-grid';
+import { GridCallbackDetails, GridPaginationModel, GridRowParams, MuiEvent } from '@mui/x-data-grid';
 import { useNavigate, useParams } from 'react-router-dom';
-import createColumns from './BoardsColumns'
-import BoardFooter from './BoardFooter'
-export const BoardContext = createContext({});
+import BoardsGrid from './BoardsGrid';
+interface IBContext{
+    onRowClick : (params: GridRowParams, event: MuiEvent, details: GridCallbackDetails)=>void
+    handlePageChange: (dt: GridPaginationModel) => void
+}
+const BContextInitVal:IBContext={
+    onRowClick : (params: GridRowParams, event: MuiEvent, details: GridCallbackDetails)=>{console.warn("onRowClick: notset",params, event, details)},
+    handlePageChange: (dt: GridPaginationModel) => {console.warn("handlePageChange: notset", dt)}
+}
+export const BoardContext = createContext(BContextInitVal);
 export default function Boards(){
     const navigation = useNavigate();
     const dispatch = useDispatch();
@@ -21,7 +28,11 @@ export default function Boards(){
     const userId = useSelector((state:RootState)=>state.auth.user?state.auth.user.id:0);
     const [showUserId, setShowUserId] = useState(usDefault?userId:0);
     const [page, setPage] = useState(routepage?+routepage:1);
-    const { data , error, isFetching } = useTDSGetAllQuery({userId:showUserId,page:page,pageSize:pageSize});
+    const { data, isFetching } = useTDSGetAllQuery({userId:showUserId,page:page,pageSize:pageSize});//error - За ремил
+    const onRowClick = (params: GridRowParams, event: MuiEvent, details: GridCallbackDetails)=>{
+        console.log(params, event,details);
+    }
+
     const changeUserShowClick = (e:ChangeEvent<HTMLInputElement>)=>{
         if (e.target.checked){
                 navigation('/boards/ownedbycurrentuser'+(routepage?`/page/${routepage}`:''));
@@ -39,29 +50,10 @@ export default function Boards(){
             dispatch(setShowOnlyMyBoards({showOnlyMyBoards:showOnlyMyBoards,boardsPageItemCount:dt.pageSize}));
         }
     };
-    const paginationModel={
-        page: page?(page-1):0, 
-        pageSize: data?data.pagination.perPage:0,
-    }
-    const columns = createColumns();
-    const onRowClick = (params: GridRowParams, event: MuiEvent, details: GridCallbackDetails)=>{
-        console.log(params, event,details);
-    }
-    const [rows, setRows] = useState(data?.todos);
-    const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-    const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
-        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-            event.defaultMuiPrevented = true;
-        }
-    };
-    const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-        setRowModesModel(newRowModesModel);
-    };
-
 
     useEffect(()=>{
-        console.log('ownedbyuser',!!ownedbyuser);
-        console.log('userID',userId);
+        // console.log('ownedbyuser',!!ownedbyuser);
+        // console.log('userID',userId);
         console.log('routepage',routepage);
         if (typeof(routepage)==='string' && page!==+routepage){
             setPage(+routepage);
@@ -81,33 +73,14 @@ export default function Boards(){
         {data?.todos && <Box paddingBottom={2}>
             <Box component="div" sx={{pb:1.5,width:'100%'}}>
                 <BoardContext.Provider value={{
-                    rows:rows,
-                    rowModesModel:rowModesModel,
-                    setRows:setRows,
-                    setRowModesModel:setRowModesModel
+                    handlePageChange:(dt: GridPaginationModel)=>{handlePageChange(dt)},
+                    onRowClick:(params: GridRowParams, event: MuiEvent, details: GridCallbackDetails)=>{onRowClick(params,event,details)}
                 }}>
-                    <DataGrid
-                        sx={{height:600}}
-                        rows={data.todos}
-                        columns={columns}
-                        rowCount={data?data.pagination.totalCount:0}
-                        paginationModel={paginationModel}
-                        paginationMode="server"
-                        pageSizeOptions={[2,3,5,10]}
-                        onPaginationModelChange={handlePageChange}
-                        loading={isFetching}
-                        onRowClick={onRowClick}
-                        editMode="row"
-                        rowModesModel={rowModesModel}
-                        onRowModesModelChange={handleRowModesModelChange}
-                        onRowEditStop={handleRowEditStop}
-                
-                        slots={{
-                            loadingOverlay: LinearProgress,
-                            footer:BoardFooter
-                        }}
-
-                        // checkboxSelection
+                    <BoardsGrid
+                        todos={data?data.todos:[]}
+                        pagination={data?data.pagination:{pageCount:0,perPage:0,currentPage:0,totalCount:0}}
+                        isFetching={isFetching}
+                        page={page}
                     />
                 </BoardContext.Provider>
             </Box>

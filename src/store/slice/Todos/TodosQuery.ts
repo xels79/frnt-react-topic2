@@ -1,7 +1,30 @@
-import { ITodoWithPagination } from './../../../interfaces/ITodo';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { ITodo, ITodoWithPagination } from './../../../interfaces/ITodo';
+import { FetchBaseQueryMeta, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 // Define a service using a base URL and expected endpoints
+const  createPagination = (resp:Response):{
+    currentPage:number,
+    pageCount:number
+    perPage:number,
+    totalCount:number
+}=>{
+    return {
+        currentPage:+(resp.headers.get('X-Pagination-Current-Page') as string),
+        pageCount:+(resp.headers.get('X-Pagination-Page-Count') as string),
+        perPage:+(resp.headers.get('X-Pagination-Per-Page') as string),
+        totalCount:+(resp.headers.get('X-Pagination-Total-Count') as string)
+    };
+};
+const transformResponse = (responseData: any, meta:FetchBaseQueryMeta | undefined) => {
+    // Output 1（ Response header  X-Pagination-Current-Page: 1）
+    console.log('TodosQuery: transformResponse');
+    responseData={todos:responseData};
+    if (meta?.response?.headers){
+        responseData.pagination=createPagination(meta.response);
+    }
+    return responseData;
+};
+
 export const TodosQuryApi = createApi({
     reducerPath: 'tdsQuery',
     baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
@@ -23,20 +46,7 @@ export const TodosQuryApi = createApi({
             },
             providesTags: (result) =>
                 result ? result.todos.map(({ id }) => ({ type: 'Todos', id })) : ['Todos'],
-            transformResponse: (responseData: any, meta) => {
-                // Output 1（ Response header  X-Pagination-Current-Page: 1）
-                console.log('TodosQuery: transformResponse');
-                responseData={todos:responseData};
-                if (meta?.response?.headers){
-                    responseData.pagination={
-                        currentPage:+(meta.response.headers.get('X-Pagination-Current-Page') as string),
-                        pageCount:+(meta.response.headers.get('X-Pagination-Page-Count') as string),
-                        perPage:+(meta.response.headers.get('X-Pagination-Per-Page') as string),
-                        totalCount:+(meta.response.headers.get('X-Pagination-Total-Count') as string)
-                    }
-                }
-                return responseData;
-            },
+            transformResponse: transformResponse,
         }),
         TDSGetCreateNew:builder.mutation<ITodoWithPagination, {name:string, user_id:number}>({
             query:(inData) => ({
@@ -48,24 +58,36 @@ export const TodosQuryApi = createApi({
                 body:JSON.stringify(inData)
             }),
             invalidatesTags:['Todos'],
-            transformResponse: (responseData: any, meta) => {
-                // Output 1（ Response header  X-Pagination-Current-Page: 1）
-                console.log('TodosQuery: transformResponse');
-                responseData={todos:responseData};
-                if (meta?.response?.headers){
-                    responseData.pagination={
-                        currentPage:+(meta.response.headers.get('X-Pagination-Current-Page') as string),
-                        pageCount:+(meta.response.headers.get('X-Pagination-Page-Count') as string),
-                        perPage:+(meta.response.headers.get('X-Pagination-Per-Page') as string),
-                        totalCount:+(meta.response.headers.get('X-Pagination-Total-Count') as string)
-                    }
-                }
-                return responseData;
-            },
+            transformResponse: transformResponse,
+        }),
+        TDSUpdate:builder.mutation<ITodoWithPagination, ITodo>({
+            query:(inData) => ({
+                url:`todos/${inData.id}`,
+                method:"PUT",
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({name:inData.name})
+            }),
+            invalidatesTags:['Todos'],
+            transformResponse: transformResponse,
+        }),
+        TDSDelete:builder.mutation<ITodoWithPagination, number>({
+            query:(inData) => ({
+                url:`todos/${inData}`,
+                method:"DELETE",
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                // body:JSON.stringify({name:inData.name})
+            }),
+            invalidatesTags:['Todos'],
+            transformResponse: transformResponse,
         })
+
     }),
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useTDSGetAllQuery, useTDSGetCreateNewMutation } = TodosQuryApi
+export const { useTDSGetAllQuery, useTDSGetCreateNewMutation, useTDSUpdateMutation , useTDSDeleteMutation} = TodosQuryApi

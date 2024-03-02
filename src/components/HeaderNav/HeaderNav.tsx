@@ -17,8 +17,8 @@ export default function HeaderNav(){
     return <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
         {navItems.map((item:IList,index) => {
             const isActive = location.pathname===item.path || (item.path.length>1 && location.pathname.indexOf(item.path)>-1);
-            console.log(location.pathname);
-            console.log(item.path,location.pathname.length,location.pathname.indexOf(item.path));
+            // console.log(location.pathname);
+            // console.log(item.path,location.pathname.length,location.pathname.indexOf(item.path));
         return <Button key={`nav-menu-${index}`} sx={{ 
                 color: '#fff',
                 bgcolor: isActive?'primary.light':''
