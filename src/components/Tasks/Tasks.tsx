@@ -30,7 +30,7 @@ export default function Tasks(){
     const [page, setPage] = useState(routepage?+routepage:1);
     const { data, isFetching } = useTDSGetAllQuery({userId:showUserId,page:page,pageSize:pageSize});//error - За ремил
     const onRowClick = (params: GridRowParams, event: MuiEvent, details: GridCallbackDetails)=>{
-        console.log(params, event,details);
+        // console.log(params, event,details);
     }
 
     const changeUserShowClick = (e:ChangeEvent<HTMLInputElement>)=>{
@@ -54,7 +54,7 @@ export default function Tasks(){
     useEffect(()=>{
         // console.log('ownedbyuser',!!ownedbyuser);
         // console.log('userID',userId);
-        console.log('routepage',routepage);
+        // console.log('routepage',routepage);
         if (typeof(routepage)==='string' && page!==+routepage){
             setPage(+routepage);
         }

@@ -14,11 +14,12 @@ import { RootState } from '../../store/Store'
 import { useSelector } from 'react-redux';
 import useAppDispatch from '../../hooks/AppDispatch';
 import SystemMessages from '../SystemMessages/SystemMessages'
+import MBreadcrumbs from '../MBreadcrumbs/MBreadcrumbs';
 export default function Layout(){
     const showSignUp = useSelector((state:RootState)=>state.auth.showSignUpDialog);
     const showSignIn = useSelector((state:RootState)=>state.auth.showSignInDialog);
+    
     const dispatch = useAppDispatch();
-
     return (
         <>
         <Box
@@ -44,6 +45,7 @@ export default function Layout(){
                 }}
             >
                 <Container maxWidth="lg">
+                    <MBreadcrumbs />
                     <Outlet />
                 </Container>
             </Box>

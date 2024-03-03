@@ -16,7 +16,7 @@ function Pagination({
             count={pageCount}
             page={page + 1}
             onChange={(event, newPage) => {
-                console.warn("page clickk",event,newPage-1);
+                // console.warn("page clickk",event,newPage-1);
                 onPageChange(event as any, newPage - 1);
             }}
         />

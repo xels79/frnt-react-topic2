@@ -14,7 +14,7 @@ export const slice = createSlice({
     initialState,
     reducers:{
         removeMessages:(state, action: PayloadAction<number>)=>{
-            console.log('removeMessages',state,action);
+            // console.log('removeMessages',state,action);
             return state.filter(item=>item.id!==action.payload);
         },
         addMessage:(state, action: PayloadAction<IMessage>)=>{

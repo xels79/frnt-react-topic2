@@ -1,4 +1,4 @@
-import { IOneTodoWithPagination, ITodo, ITodoAction, ITodoActionsWithPagination, ITodoWithPagination } from './../../../interfaces/ITodo';
+import { ITodo, ITodoAction, ITodoWithPagination } from './../../../interfaces/ITodo';
 import { FetchBaseQueryMeta, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 // Define a service using a base URL and expected endpoints
@@ -24,15 +24,7 @@ const transformResponse = (responseData: any, meta:FetchBaseQueryMeta | undefine
     }
     return responseData;
 };
-const transformActionsResponse = (responseData: any, meta:FetchBaseQueryMeta | undefined) => {
-    // Output 1（ Response header  X-Pagination-Current-Page: 1）
-    console.log('TodosQuery: transformResponse');
-    responseData={todoActions:responseData};
-    if (meta?.response?.headers){
-        responseData.pagination=createPagination(meta.response);
-    }
-    return responseData;
-};
+
 
 export const TodosQuryApi = createApi({
     reducerPath: 'tdsQuery',
@@ -95,9 +87,15 @@ export const TodosQuryApi = createApi({
         }),
         TDSGetTodo: builder.query<ITodo, number>({
             query: (inData) => {
-                return `todos/${inData}?expand=todoActions`;
+                return `todos/${inData}?fields=name`;
             },
             providesTags: (result) =>result ? [{type:'Todo',id:result.id}]:['Todo'],
+        }),
+        TDSGetTodoActions: builder.query<ITodoAction[], {todo__id:number, status:number[]}>({
+            query: (inData)=>`todo-actions?filter[todo_id]=${inData.todo__id}`+inData.status.reduce((acc,val,index)=>acc+`&filter[status][${index}]=${val}`,''),
+            providesTags: (result) =>
+                result ? result.map(({ id }) => ({ type: 'TodoActions', id })) : ['TodoActions'],
+
         }),
         TDSUpdateActionState: builder.mutation<ITodoAction, {id:number, status:number}>({
             query: (inData) => ({
@@ -108,7 +106,18 @@ export const TodosQuryApi = createApi({
                 },
                 body:JSON.stringify({status:inData.status})
             }),
-            invalidatesTags:['Todos', 'Todo'],
+            invalidatesTags:['Todos', 'Todo', 'TodoActions'],
+        }),
+        TDSUpdateActionName: builder.mutation<ITodoAction, {id:number, name:string}>({
+            query: (inData) => ({
+                url:`todo-actions/${inData.id}`,
+                method:'PUT',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({name:inData.name})
+            }),
+            invalidatesTags:['Todos', 'Todo', 'TodoActions'],
         }),
         TDSCreateAction: builder.mutation<ITodoAction, {name:string, todo_id:number}>({
             query: (inData) => ({
@@ -119,18 +128,32 @@ export const TodosQuryApi = createApi({
                 },
                 body:JSON.stringify({name:inData.name, todo_id:inData.todo_id})
             }),
-            invalidatesTags:['Todos', 'Todo'],
+            invalidatesTags:['Todos', 'Todo', 'TodoActions'],
+        }),
+        TDSDeleteAction: builder.mutation<ITodoAction, number>({
+            query: (inData) => ({
+                url:`todo-actions/${inData}`,
+                method:'DELETE',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+            }),
+            invalidatesTags:['Todos', 'Todo', 'TodoActions'],
         })
     }),
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useTDSGetAllQuery,
+export const {
+    useTDSGetAllQuery,
     useTDSGetCreateNewMutation,
     useTDSUpdateMutation,
     useTDSDeleteMutation,
     useTDSGetTodoQuery,
     useTDSUpdateActionStateMutation,
-    useTDSCreateActionMutation
+    useTDSCreateActionMutation,
+    useTDSDeleteActionMutation,
+    useTDSUpdateActionNameMutation,
+    useTDSGetTodoActionsQuery
 } = TodosQuryApi

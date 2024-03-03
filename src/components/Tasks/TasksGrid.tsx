@@ -190,7 +190,7 @@ export default function TasksGrid({isFetching, page, todos,pagination,ownedbyuse
                 dispatch(addMessage({type:"error","message":"Ошибка сохранения"}));
             }
         }
-        console.log('rowUpdateResult',rowUpdateResult);
+        // console.log('rowUpdateResult',rowUpdateResult);
     },[rowUpdateResult]);
     useEffect(()=>{
         if (!rowRemoveResult.isUninitialized && !rowRemoveResult.isLoading){
@@ -200,7 +200,7 @@ export default function TasksGrid({isFetching, page, todos,pagination,ownedbyuse
                 dispatch(addMessage({type:"error","message":"Ошибка удаления"}));
             }
         }
-        console.log('rowRemoveResult',rowRemoveResult);
+        // console.log('rowRemoveResult',rowRemoveResult);
     },[rowRemoveResult]);
 
     return <><DataGrid

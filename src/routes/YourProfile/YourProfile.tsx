@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import style from './YourProfile.module.scss'
 import useAppDispatch from '../../hooks/AppDispatch';
 import { clearMessage } from '../../store/slice/UserREST/UserRESTSlice';
+import { addBreadCrumbs } from '../../store/slice/breadcrumbs/BreadCrumbsSlice';
 export default function YourProfile(){
     const userId = useSelector((state:RootState)=>state.auth.user?state.auth.user.id:0);
     const {user, pending, errors:_errors, message} = useSelector((state:RootState)=>state.UserRest);
@@ -30,6 +31,12 @@ export default function YourProfile(){
         console.log(data);
         dispatch(UserSaveThunk(serverData));
     }
+    useEffect(()=>{
+        dispatch(addBreadCrumbs([
+            {label:'Профиль',link:null},
+        ]));
+    });
+
     useEffect(()=>{
         if (_errors){
             console.log('errors',_errors);
