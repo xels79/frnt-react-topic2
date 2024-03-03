@@ -5,7 +5,8 @@ export interface ITodoAction{
     status:number|string,
     created_a:string,
     updated_at:string,
-    todo_id:string
+    todo_id:string,
+    todo:ITodo
 }
 export interface IUserInfo{
     username:string,
@@ -22,14 +23,23 @@ export interface ITodo{
     user:IUserInfo,
     isNew?:boolean
 }
+interface IPagination{
+    currentPage:number,
+    pageCount:number,
+    perPage:number,
+    totalCount:number
+}
 export interface ITodoWithPagination{
     todos:ITodo[],
-    pagination:{
-        currentPage:number,
-        pageCount:number,
-        perPage:number,
-        totalCount:number
-    }
+    pagination:IPagination
+}
+export interface ITodoActionsWithPagination{
+    todoActions:ITodoAction[],
+    pagination:IPagination
+}
+export interface IOneTodoWithPagination{
+    todo:ITodo,
+    pagination:IPagination
 }
 export type TTodoActionKeys = Record<(keyof ITodoAction), string>;
 export type TTodosKeys = Record<(keyof ITodo), string>;

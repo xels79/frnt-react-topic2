@@ -9,17 +9,19 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import BoardFooter from './BoardFooter'
-import { LinearProgress } from "@mui/material";
-import {BoardContext} from './Boards'
+import BoardFooter from './TaskFooter'
+import { LinearProgress, Tooltip } from "@mui/material";
+import {BoardContext} from './Tasks'
 import { useTDSDeleteMutation, useTDSUpdateMutation } from "../../store/slice/Todos/TodosQuery";
 import useAppDispatch from "../../hooks/AppDispatch";
 import { addMessage } from "../../store/slice/messages/MessageSlice";
-import AlertDialog from "../../components/Dialogs/AlertDialog";
-export default function BoardsGrid({isFetching, page, todos,pagination}:{
+import AlertDialog from "../Dialogs/AlertDialog";
+import { useNavigate } from "react-router-dom";
+export default function TasksGrid({isFetching, page, todos,pagination,ownedbyuser}:{
     page:number,
     todos:ITodo[],
     isFetching:boolean,
+    ownedbyuser:string|undefined,
     pagination: {
         currentPage: number;
         pageCount: number;
@@ -27,9 +29,9 @@ export default function BoardsGrid({isFetching, page, todos,pagination}:{
         totalCount: number;
     }
 }){
+    const navigation = useNavigate();
     const {handlePageChange, onRowClick} = useContext(BoardContext);
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-    //const [rows, setRows] = useState(todos);
     const [rowUpdate, rowUpdateResult] = useTDSUpdateMutation();
     const [rowRemove, rowRemoveResult] = useTDSDeleteMutation();
     const dispatch = useAppDispatch();
@@ -60,7 +62,6 @@ export default function BoardsGrid({isFetching, page, todos,pagination}:{
         }else{
             // console.log(todos, row,id);
         }
-        //setRows(rows.filter((row) => row.id !== id));
     };
     
     const handleCancelClick = (id: GridRowId) => () => {
@@ -109,9 +110,22 @@ export default function BoardsGrid({isFetching, page, todos,pagination}:{
                 if (itCount && itCount === doneCount){
                     return <Icon color="success"><CheckCircleIcon /></Icon>
                 }else{
-                return <Badge 
-                    color={!doneCount&&!itCount?"secondary":"error"}
-                    badgeContent={itCount}><EngineeringIcon/></Badge>
+                    let title
+                    if (!itCount){
+                        title = "Нет действий - перейти на страничку с действиями";
+                    }else{
+                        title = `Выполнено ${doneCount} из ${itCount} действий `;
+                        title += "перейти на страничку с действиями";
+                    }
+                    return <Tooltip title={title}><Badge 
+                            color={!doneCount&&!itCount?"secondary":(doneCount<(itCount/2)?"error":"warning")}
+                            badgeContent={itCount-doneCount}
+                            onClick={()=>{
+                                console.log("Open action page",params.row.id);
+                                navigation(`/boards${ownedbyuser?'/ownedbycurrentuser':''}${page?`/page/${page}`:''}/board/${params.row.id}`);
+                            }}
+                            sx={{cursor:"pointer"}}
+                        ><EngineeringIcon color={!itCount?"error":"primary"}/></Badge></Tooltip>
                 }
             }
         },
@@ -181,9 +195,9 @@ export default function BoardsGrid({isFetching, page, todos,pagination}:{
     useEffect(()=>{
         if (!rowRemoveResult.isUninitialized && !rowRemoveResult.isLoading){
             if (rowRemoveResult.isSuccess && !rowRemoveResult.isError){
-                dispatch(addMessage({type:"success","message":"Успешно сохранено"}));
+                dispatch(addMessage({type:"success","message":"Успешно удалено"}));
             }else{
-                dispatch(addMessage({type:"error","message":"Ошибка сохранения"}));
+                dispatch(addMessage({type:"error","message":"Ошибка удаления"}));
             }
         }
         console.log('rowRemoveResult',rowRemoveResult);

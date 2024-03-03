@@ -22,7 +22,7 @@ function Pagination({
         />
         );
 }
-export default function BoardPagination(props: any) {
+export default function TaskPagination(props: any) {
     return <GridPagination labelDisplayedRows={({from,to,count}: LabelDisplayedRowsArgs)=>{
         //const dsc1 = <Declension num={to} declension={['ый','ой','ий']}/>;
         return <>показаны с <i>{from}</i> по <i>{to}</i> всего <i>{count}</i></>
