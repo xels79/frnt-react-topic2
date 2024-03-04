@@ -30,8 +30,8 @@ export default function Task({
     const dispatch = useAppDispatch();
     const [filter, setFilter] = useState([0,1,2]);
     const { data, isFetching } = useTDSGetTodoQuery(taskNum);
-    const { data:_todoActions, isFetching:isFetchingTodoAction} = useTDSGetTodoActionsQuery({todo__id:taskNum, status:filter});
-    const todoActions:ITodoAction[] = _todoActions? _todoActions:[];
+    const { data:todoActions, isFetching:isFetchingTodoAction} = useTDSGetTodoActionsQuery({todo__id:taskNum, status:filter});
+    //const todoActions:ITodoAction[] = _todoActions? _todoActions:[];
     const [updateState, updateStateResult] = useTDSUpdateActionStateMutation();
     const [deleteAction, deleteActionResult] = useTDSDeleteActionMutation();
     const [updateName, updateNameResult] = useTDSUpdateActionNameMutation();
@@ -72,11 +72,13 @@ export default function Task({
     }
     const handleDeleteClick = (id: GridRowId ) => () => {
         console.warn('handleDeleteClick',id);
-        const row = todoActions.find((row) => row.id === id as number);
-        if (row){
-            setIdToDelete(+id as number);
-        }else{
-            // console.log(todos, row,id);
+        if  (todoActions){
+            const row = todoActions.find((row) => row.id === id as number);
+            if (row){
+                setIdToDelete(+id as number);
+            }else{
+                // console.log(todos, row,id);
+            }
         }
     };
     
@@ -231,7 +233,7 @@ export default function Task({
         <DataGrid
             sx={{mt:2}}
             columns={columns}
-            rows={todoActions}
+            rows={todoActions?todoActions:[]}
             editMode="row"
             rowModesModel={rowModesModel}
             onRowModesModelChange={handleRowModesModelChange}

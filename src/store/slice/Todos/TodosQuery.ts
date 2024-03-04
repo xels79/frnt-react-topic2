@@ -57,8 +57,8 @@ export const TodosQuryApi = createApi({
                 }
                 return url;
             },
-            providesTags: (result) =>
-                result ? result.todos.map(({ id }) => ({ type: 'Todos', id })) : ['Todos'],
+            providesTags: () =>['Todos'],
+                //result ? result.todos.map(({ id }) => ({ type: 'Todos', id })) : ['Todos'],
             transformResponse: transformResponse,
         }),
         TDSGetCreateNew:builder.mutation<ITodoWithPagination, {name:string, user_id:number}>({
@@ -105,8 +105,8 @@ export const TodosQuryApi = createApi({
         }),
         TDSGetTodoActions: builder.query<ITodoAction[], {todo__id:number, status:number[]}>({
             query: (inData)=>`todo-actions?filter[todo_id]=${inData.todo__id}`+inData.status.reduce((acc,val,index)=>acc+`&filter[status][${index}]=${val}`,''),
-            providesTags: (result) =>
-                result ? result.map(({ id }) => ({ type: 'TodoActions', id })) : ['TodoActions'],
+            providesTags: () => ['TodoActions'],
+                //result ? result.map(({ id }) => ({ type: 'TodoActions', id:+id })) : ['TodoActions'],
 
         }),
         TDSUpdateActionState: builder.mutation<ITodoAction, {id:number, status:number}>({
@@ -141,6 +141,9 @@ export const TodosQuryApi = createApi({
                 body:JSON.stringify({name:inData.name, todo_id:inData.todo_id})
             }),
             invalidatesTags:['Todos', 'Todo', 'TodoActions'],
+            transformResponse: (responseData: any) => {
+                return responseData as ITodoAction;
+            }
         }),
         TDSDeleteAction: builder.mutation<ITodoAction, number>({
             query: (inData) => ({
