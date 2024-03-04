@@ -1,10 +1,10 @@
 
-import { Box, Checkbox, FormControlLabel, FormGroup }  from '@mui/material';
+import { Box, Checkbox, FormControlLabel, FormGroup, Toolbar, Typography }  from '@mui/material';
 import { ChangeEvent, createContext, useEffect, useState } from 'react';
 import { useTDSGetAllQuery } from '../../store/slice/Todos/TodosQuery';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/Store';
-import { setShowOnlyMyBoards } from '../../store/slice/auth/authSlice';
+import { setShowEmptyBoards, setShowOnlyMyBoards, setShowReadyBoards } from '../../store/slice/auth/authSlice';
 import { GridCallbackDetails, GridPaginationModel, GridRowParams, MuiEvent } from '@mui/x-data-grid';
 import { useNavigate, useParams } from 'react-router-dom';
 import TasksGrid from './TasksGrid';
@@ -22,17 +22,30 @@ export default function Tasks(){
     const dispatch = useDispatch();
     const {ownedbyuser, routepage} = useParams();
     const showOnlyMyBoards = useSelector((state:RootState)=>state.auth.user?.option?.showOnlyMyBoards===true);
-    const boardsPageItemCount = useSelector((state:RootState)=>state.auth.user?.option?.boardsPageItemCount)
+    const boardsPageItemCount = useSelector((state:RootState)=>state.auth.user?.option?.boardsPageItemCount);
     const pageSize = boardsPageItemCount?boardsPageItemCount:3;
     const usDefault = showOnlyMyBoards || !!ownedbyuser;
+    const _showReady = useSelector((state:RootState)=>state.auth.user?.option?.showReady);
+    const _showEmpty = useSelector((state:RootState)=>state.auth.user?.option?.showEmpty);
     const userId = useSelector((state:RootState)=>state.auth.user?state.auth.user.id:0);
     const [showUserId, setShowUserId] = useState(usDefault?userId:0);
     const [page, setPage] = useState(routepage?+routepage:1);
-    const { data, isFetching } = useTDSGetAllQuery({userId:showUserId,page:page,pageSize:pageSize});//error - За ремил
+    const { data, isFetching } = useTDSGetAllQuery({
+        userId:showUserId,
+        page:page,
+        pageSize:pageSize,
+        hideEmpty:!_showEmpty,
+        hideReady:!_showReady
+    });//error - За ремил
     const onRowClick = (params: GridRowParams, event: MuiEvent, details: GridCallbackDetails)=>{
-        // console.log(params, event,details);
+        console.log(params, event,details);
     }
-
+    const changeShowReadyClick = (e:ChangeEvent<HTMLInputElement>)=>{
+        dispatch(setShowReadyBoards(e.target.checked));
+    }
+    const changeShowEmptyClick = (e:ChangeEvent<HTMLInputElement>)=>{
+        dispatch(setShowEmptyBoards(e.target.checked));
+    }
     const changeUserShowClick = (e:ChangeEvent<HTMLInputElement>)=>{
         if (e.target.checked){
                 navigation('/boards/ownedbycurrentuser'+(routepage?`/page/${routepage}`:''));
@@ -47,7 +60,12 @@ export default function Tasks(){
             navigation(`/boards${ownedbyuser?'/ownedbycurrentuser':''}/page/${dt.page+1}`);
         }
         if (dt.pageSize!==pageSize){
-            dispatch(setShowOnlyMyBoards({showOnlyMyBoards:showOnlyMyBoards,boardsPageItemCount:dt.pageSize}));
+            dispatch(setShowOnlyMyBoards({
+                showOnlyMyBoards:showOnlyMyBoards,
+                boardsPageItemCount:dt.pageSize,
+                showEmpty:!!_showEmpty,
+                showReady:!!_showReady
+            }));
         }
     };
 
@@ -67,9 +85,16 @@ export default function Tasks(){
     },[routepage,usDefault, data?.pagination.pageCount])
     return (
         <>
-        <FormGroup>
-            <FormControlLabel control={<Checkbox checked={usDefault} onChange={changeUserShowClick}/>} label="Только текущего пользователя" />
-        </FormGroup>
+        <Box p={1}>
+            <Typography variant="h5" textAlign="left">Показать:</Typography>
+            <Toolbar variant="dense">
+                <FormGroup row={true}>
+                    <FormControlLabel control={<Checkbox checked={usDefault} onChange={changeUserShowClick}/>} label="Только текущего пользователя" />
+                    <FormControlLabel control={<Checkbox checked={!!_showEmpty} onChange={changeShowEmptyClick}/>} label="Пустые" />
+                    <FormControlLabel control={<Checkbox checked={!!_showReady} onChange={changeShowReadyClick}/>} label="Законченые" />
+                </FormGroup>
+            </Toolbar>
+        </Box>
         {data?.todos && <Box paddingBottom={2}>
             <Box component="div" sx={{pb:1.5,width:'100%'}}>
                 <BoardContext.Provider value={{

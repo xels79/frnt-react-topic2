@@ -12,7 +12,9 @@ export interface IUserStore extends IUserBase{
     id:number,
     option?:{
         showOnlyMyBoards:boolean,
-        boardsPageItemCount:number
+        boardsPageItemCount:number,
+        showEmpty:boolean,
+        showReady:boolean
     }
 }
 export default interface IUser extends IUserLogin, IUserStore{

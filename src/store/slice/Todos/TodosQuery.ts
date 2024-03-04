@@ -31,9 +31,21 @@ export const TodosQuryApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
     tagTypes: ['Todos','TodoActions', 'Todo'],
     endpoints: (builder) => ({
-        TDSGetAll: builder.query<ITodoWithPagination, void|{userId?:number,page?:number,pageSize?:number}>({
+        TDSGetAll: builder.query<ITodoWithPagination, void|{
+            userId?:number,
+            page?:number,
+            pageSize?:number,
+            hideEmpty?:boolean,
+            hideReady?:boolean
+        }>({
             query: (inData) => {
-                let url = 'todos?expand=todoActions,user';
+                let url = 'todos?expand=todoActions,user,actionCount';
+                if (inData && inData.hideReady){
+                    url+=`&filter2[hideReady]=1`;
+                }
+                if (inData && inData.hideEmpty){
+                    url+=`&filter2[hideEmpty]=1`;
+                }
                 if (inData && inData.userId){
                     url+=`&filter[user_id]=${inData.userId}`;
                 }

@@ -2,7 +2,16 @@ import { Avatar, Box, Button, Card, Divider, Stack, Typography } from '@mui/mate
 import {  useHref } from 'react-router-dom';
 import { RemoveCircleOutline } from '@mui/icons-material';
 import { red } from '@mui/material/colors';
+import { addBreadCrumbs } from '../../store/slice/breadcrumbs/BreadCrumbsSlice';
+import { useEffect } from 'react';
+import useAppDispatch from '../../hooks/AppDispatch';
 export default function Error() {
+    const dispatch = useAppDispatch();
+    useEffect(()=>{
+        dispatch(addBreadCrumbs([
+            {label:'Страничка не найдена',link:null},
+        ]));
+    });
     return (
         <Card variant="outlined" sx={{ maxWidth: 560, margin:'0 auto' }}>
             <Box sx={{ p: 2 }}>
