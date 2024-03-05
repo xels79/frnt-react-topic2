@@ -79,7 +79,7 @@ export const TasksColumns=({
                     title += "перейти на страничку с действиями";
                 }
                 return <Tooltip title={title}><Badge 
-                        color={!doneCount&&!itCount?"secondary":(doneCount<(itCount/2)?"error":"warning")}
+                        color={!doneCount&&!itCount?"secondary":(doneCount<(itCount/2)?(!doneCount?"error":"secondary"):"info")}
                         badgeContent={itCount-doneCount}
                         onClick={()=>{
                             console.log("Open action page",params.row.id);

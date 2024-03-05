@@ -10,10 +10,13 @@ export const setShowOnlyMyBoards = createAction<{
     showOnlyMyBoards:boolean,
     boardsPageItemCount:number,
     showEmpty:boolean,
-    showReady:boolean
+    showReady:boolean,
+    showInWorks:boolean,
 }, 'userUpdateSOMB'>('userUpdateSOMB')
 export const setShowReadyBoards = createAction<boolean, 'userUpdateSRB'>('userUpdateSRB')
 export const setShowEmptyBoards = createAction<boolean, 'userUpdateSEB'>('userUpdateSEB')
+export const setShowInWorkBoards = createAction<boolean, 'userUpdateSIWB'>('userUpdateSIWB')
+
 export const slice = createSlice({
     name:"auth",
     initialState,
@@ -33,6 +36,22 @@ export const slice = createSlice({
             state.user = payload;
             window.localStorage.setItem("TesyReacyProject_userStore",JSON.stringify(state.user));
         })
+        builder.addCase(setShowInWorkBoards, (state, { payload })=>{
+            if (state.user){
+                if (state.user.option){
+                    state.user.option.showInWorks = payload;
+                }else{
+                    state.user.option = {
+                        showOnlyMyBoards:false,
+                        boardsPageItemCount:3,
+                        showEmpty:true,
+                        showReady:true,
+                        showInWorks:payload,
+                    }
+                }
+                window.localStorage.setItem("TesyReacyProject_userStore",JSON.stringify(state.user));
+            }
+        })
         builder.addCase(setShowReadyBoards, (state, { payload })=>{
             if (state.user){
                 if (state.user.option){
@@ -42,7 +61,8 @@ export const slice = createSlice({
                         showOnlyMyBoards:false,
                         boardsPageItemCount:3,
                         showEmpty:true,
-                        showReady:payload
+                        showReady:payload,
+                        showInWorks:true,
                     }
                 }
                 window.localStorage.setItem("TesyReacyProject_userStore",JSON.stringify(state.user));
@@ -57,7 +77,8 @@ export const slice = createSlice({
                         showOnlyMyBoards:false,
                         boardsPageItemCount:3,
                         showEmpty:payload,
-                        showReady:true
+                        showReady:true,
+                        showInWorks:true,
                     }
                 }
                 window.localStorage.setItem("TesyReacyProject_userStore",JSON.stringify(state.user));
@@ -73,7 +94,7 @@ export const slice = createSlice({
         })
         builder.addCase(LoginThunk.fulfilled, (state, { payload }) => {
             state.user = payload.user;
-            state.user.option={showOnlyMyBoards:false,boardsPageItemCount:3,showEmpty:true,showReady:true};
+            state.user.option={showOnlyMyBoards:false,boardsPageItemCount:3,showEmpty:true,showReady:true,showInWorks:true};
             state.redirectTo = payload.redirectTo;
             state.pending = false;
             // state.showSignInDialog = false;
@@ -95,7 +116,7 @@ export const slice = createSlice({
         })
         builder.addCase(SigUpThunk.fulfilled, (state, { payload }) =>{
             state.user = payload.user;
-            state.user.option={showOnlyMyBoards:false,boardsPageItemCount:3,showEmpty:true,showReady:true};
+            state.user.option={showOnlyMyBoards:false,boardsPageItemCount:3,showEmpty:true,showReady:true,showInWorks:true};
             state.redirectTo = payload.redirectTo;
             state.pending = false;
             // state.showSignInDialog = false;

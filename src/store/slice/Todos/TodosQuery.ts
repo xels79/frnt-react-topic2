@@ -36,12 +36,16 @@ export const TodosQuryApi = createApi({
             page?:number,
             pageSize?:number,
             hideEmpty?:boolean,
-            hideReady?:boolean
+            hideReady?:boolean,
+            hideInWorks?:boolean
         }>({
             query: (inData) => {
                 let url = 'todos?expand=todoActions,user,actionCount';
                 if (inData && inData.hideReady){
                     url+=`&filter2[hideReady]=1`;
+                }
+                if (inData && inData.hideInWorks){
+                    url+=`&filter2[hideInWorks]=1`;
                 }
                 if (inData && inData.hideEmpty){
                     url+=`&filter2[hideEmpty]=1`;

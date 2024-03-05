@@ -4,7 +4,7 @@ import { ChangeEvent, createContext, useEffect, useState } from 'react';
 import { useTDSGetAllQuery } from '../../store/slice/Todos/TodosQuery';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/Store';
-import { setShowEmptyBoards, setShowOnlyMyBoards, setShowReadyBoards } from '../../store/slice/auth/authSlice';
+import { setShowEmptyBoards, setShowInWorkBoards, setShowOnlyMyBoards, setShowReadyBoards } from '../../store/slice/auth/authSlice';
 import { GridCallbackDetails, GridPaginationModel, GridRowParams, MuiEvent } from '@mui/x-data-grid';
 import { useNavigate, useParams } from 'react-router-dom';
 import TasksGrid from './TasksGrid';
@@ -27,6 +27,7 @@ export default function Tasks(){
     const usDefault = showOnlyMyBoards || !!ownedbyuser;
     const _showReady = useSelector((state:RootState)=>state.auth.user?.option?.showReady);
     const _showEmpty = useSelector((state:RootState)=>state.auth.user?.option?.showEmpty);
+    const _showInWork = useSelector((state:RootState)=>state.auth.user?.option?.showInWorks);
     const userId = useSelector((state:RootState)=>state.auth.user?state.auth.user.id:0);
     const [showUserId, setShowUserId] = useState(usDefault?userId:0);
     const [page, setPage] = useState(routepage?+routepage:1);
@@ -35,10 +36,14 @@ export default function Tasks(){
         page:page,
         pageSize:pageSize,
         hideEmpty:!_showEmpty,
-        hideReady:!_showReady
+        hideReady:!_showReady,
+        hideInWorks:!_showInWork
     });//error - За ремил
     const onRowClick = (params: GridRowParams, event: MuiEvent, details: GridCallbackDetails)=>{
         console.log(params, event,details);
+    }
+    const changeShowInWorkClick= (e:ChangeEvent<HTMLInputElement>)=>{
+        dispatch(setShowInWorkBoards(e.target.checked));
     }
     const changeShowReadyClick = (e:ChangeEvent<HTMLInputElement>)=>{
         dispatch(setShowReadyBoards(e.target.checked));
@@ -64,7 +69,8 @@ export default function Tasks(){
                 showOnlyMyBoards:showOnlyMyBoards,
                 boardsPageItemCount:dt.pageSize,
                 showEmpty:!!_showEmpty,
-                showReady:!!_showReady
+                showReady:!!_showReady,
+                showInWorks:!!_showInWork
             }));
         }
     };
@@ -92,6 +98,7 @@ export default function Tasks(){
                     <FormControlLabel control={<Checkbox checked={usDefault} onChange={changeUserShowClick}/>} label="Только текущего пользователя" />
                     <FormControlLabel control={<Checkbox checked={!!_showEmpty} onChange={changeShowEmptyClick}/>} label="Пустые" />
                     <FormControlLabel control={<Checkbox checked={!!_showReady} onChange={changeShowReadyClick}/>} label="Законченые" />
+                    <FormControlLabel control={<Checkbox checked={!!_showInWork} onChange={changeShowInWorkClick}/>} label="В работе" />
                 </FormGroup>
             </Toolbar>
         </Box>

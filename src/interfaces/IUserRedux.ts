@@ -14,7 +14,8 @@ export interface IUserStore extends IUserBase{
         showOnlyMyBoards:boolean,
         boardsPageItemCount:number,
         showEmpty:boolean,
-        showReady:boolean
+        showReady:boolean,
+        showInWorks:boolean
     }
 }
 export default interface IUser extends IUserLogin, IUserStore{
