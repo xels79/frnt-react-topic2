@@ -2,7 +2,8 @@
 import { useLocation, Navigate } from 'react-router-dom'
 import { RootState } from '../../store/Store';
 import { useSelector } from 'react-redux';
-export default function RequireAuth({ children }: { children: JSX.Element }) {
+import { Outlet } from 'react-router-dom';
+export default function RequireAuth() {
     // const auth = useAuth();
     const location = useLocation();
     const isAuth = useSelector((state:RootState)=>state.auth.user!==null);
@@ -15,6 +16,6 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
       return <Navigate to="/forbidden" state={{ from: location }} replace />;
     }
   
-    return children;
+    return <Outlet/>;
   }
   
