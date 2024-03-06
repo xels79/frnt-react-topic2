@@ -20,19 +20,10 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Index />} />
           <Route path="/index" element={<Index />} />
-          <Route 
-            path="/logout" 
-            element={<Logout />} 
-          />
+          <Route path="/logout" element={<Logout />} />
           <Route element={ <RequireAuth/> }>
-            <Route 
-              path="/profile" 
-              element={<YoutProfile />} 
-            />
-            <Route
-              path="/boards/:ownedbyuser?/page?/:routepage?/board?/:boardNum?"
-              element={ <Boards /> }
-            />
+            <Route path="/profile" element={<YoutProfile />} />
+            <Route path="/boards/:ownedbyuser?/page?/:routepage?/board?/:boardNum?" element={ <Boards /> }/>
           </Route>
           <Route path="/forbidden" element={<Forbidden />} />
           <Route path="*" element={<NotFound />} />
